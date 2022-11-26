@@ -369,6 +369,19 @@ function get_programs_percent_by_state($state, $program_id = null)
     return $data;
 }
 
+function allow_inspector_staff_view_programs_in_institution($staff_user_id){
+    $CI = &get_instance();
+    $staff_inspector_id = get_inspector_id_by_staff_id($staff_user_id);
+    $whereUser .= 'inspector_id =' . $CI->db->escape_str($staff_inspector_id);
+    return $whereUser;
+}
+
+function inspector_staff_only_view_programs_assigned($staff_user_id){
+    $CI = &get_instance();
+    $whereUser .= 'inspector_staff_id =' . $CI->db->escape_str($staff_inspector_id);
+    return $whereUser;
+}
+
 function get_programs_where_sql_for_staff($staff_id)
 {
     $CI = &get_instance();
@@ -378,11 +391,11 @@ function get_programs_where_sql_for_staff($staff_id)
     if ($has_permission_view_own) {
         $whereUser = '((' . db_prefix() . 'programs.addedfrom=' . $CI->db->escape_str($staff_id) . ' AND ' . db_prefix() . 'programs.addedfrom IN (SELECT staff_id FROM ' . db_prefix() . 'staff_permissions WHERE feature = "programs" AND capability="view_own"))';
         if ($allow_staff_view_programs_assigned == 1) {
-            $whereUser .= ' OR assigned=' . $CI->db->escape_str($staff_id);
+            $whereUser .= ' OR '. db_prefix() . 'programs.inspector_staff_id=' . $CI->db->escape_str($staff_id);
         }
         $whereUser .= ')';
     } else {
-        $whereUser .= 'assigned=' . $CI->db->escape_str($staff_id);
+        $whereUser .= db_prefix() . 'programs.inspector_staff_id=' . $CI->db->escape_str($staff_id);
     }
 
     return $whereUser;
@@ -401,7 +414,7 @@ function staff_has_assigned_programs($staff_id = '')
     if (is_numeric($cache)) {
         $result = $cache;
     } else {
-        $result = total_rows(db_prefix() . 'programs', ['assigned' => $staff_id]);
+        $result = total_rows(db_prefix() . 'programs', ['inspector_staff_id' => $staff_id]);
         $CI->app_object_cache->add('staff-total-assigned-programs-' . $staff_id, $result);
     }
 

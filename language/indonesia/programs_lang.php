@@ -165,6 +165,11 @@ $lang['program_invoiced_date']                  					= 'Pekerjaan telah diinspek
 $lang['program_table_nomor_seri_heading'] = ' No. Seri';
 $lang['program_table_nomor_unit_heading'] = ' No. Unit';
 $lang['program_table_qty_heading'] = ' Jumlah';
+$lang['allow_inspector_staff_view_programs_in_same_institution'] = 'Dibolehkan Pengawas PJK3 melihat pekerjaan dalam 1 Dinas';
+$lang['allow_surveyor_staff_view_programs_in_same_inspector'] = 'Dibolehkan PJK3 melihat pekerjaan dalam 1 UPT';
+$lang['allow_surveyor_staff_view_programs_in_same_institution'] = 'Dibolehkan PJK3 melihat pekerjaan dalam 1 Dinas';
+$lang['its_could_be_dangeous'] = 'Hal ini dapat saja berbahaya';
+$lang['inspector_staff_only_view_programs_assigned'] = 'Pengawas K3 hanya dibolehkan melihat pekerjaan yang ditugaskan';
 
 /*
 

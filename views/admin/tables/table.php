@@ -3,6 +3,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 $project_id = $this->ci->input->post('project_id');
+$staff_id = get_staff_user_id();
 
 $aColumns = [
     db_prefix() . 'programs.number',
@@ -10,7 +11,7 @@ $aColumns = [
     'surveyor_id',
     'YEAR(date) as year',
     'inspector_id',
-    db_prefix() . 'projects.name as project_name',
+    db_prefix() . 'programs.inspector_staff_id as inspector_staff',
     'date',
     'duedate',
     'reference_no',
@@ -94,8 +95,27 @@ if ($project_id) {
 }
 
 if (!has_permission('programs', '', 'view')) {
-    $userWhere = 'AND ' . get_programs_where_sql_for_staff(get_staff_user_id());
+    $userWhere = 'AND ' . get_programs_where_sql_for_staff($staff_id);
     array_push($where, $userWhere);
+}
+
+if(is_inspector_staff($staff_id)){
+    $inspector_id = get_inspector_id_by_staff_id($staff_id);
+    $userWhere = 'AND inspector_id = ' . $this->ci->db->escape_str($inspector_id);
+    array_push($where, $userWhere);
+
+}
+
+if(get_option('inspector_staff_only_view_programs_assigned') && is_inspector_staff($staff_id)){
+    $userWhere = 'AND '. db_prefix().'programs.inspector_staff_id'.' = ' . $this->ci->db->escape_str($staff_id);
+    array_push($where, $userWhere);
+}
+
+if(is_surveyor_staff($staff_id)){
+    $surveyor_id = get_surveyor_id_by_staff_id($staff_id);
+    $userWhere = 'AND surveyor_id = ' . $this->ci->db->escape_str($surveyor_id);
+    array_push($where, $userWhere);
+
 }
 
 $aColumns = hooks()->apply_filters('programs_table_sql_columns', $aColumns);
@@ -160,7 +180,7 @@ foreach ($rResult as $aRow) {
 
     $row[] = $inspector;
 
-    $row[] = '<a href="' . admin_url('projects/view/' . $aRow['project_id']) . '">' . $aRow['project_name'] . '</a>';
+    $row[] = get_staff_full_name($aRow['inspector_staff']);
 
     $row[] = html_date($aRow['date']);
 

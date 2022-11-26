@@ -53,6 +53,10 @@ add_option('default_programs_pipeline_sort', 1);
 add_option('program_accept_identity_confirmation', 1);
 add_option('program_qrcode_size', '160');
 add_option('program_send_telegram_message', 0);
+add_option('inspector_staff_only_view_programs_assigned', 1);
+add_option('allow_inspector_staff_view_programs_in_institution', 0);
+add_option('allow_surveyor_staff_view_programs_for_same_institution', 0);
+add_option('allow_surveyor_staff_view_programs_for_same_inspector', 0);
 
 
 /*

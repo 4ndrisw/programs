@@ -12,7 +12,7 @@ $table_data = array(
       'name'=>_l('program_dt_table_heading_inspector'),
       'th_attrs'=>array('class'=> (isset($client) ? 'not_visible' : ''))
    ),
-   _l('projects'),
+   _l('staff'),
    _l('program_dt_table_heading_date'),
    _l('program_dt_table_heading_duedate'),
    _l('reference_no'),

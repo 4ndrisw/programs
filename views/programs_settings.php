@@ -25,6 +25,8 @@
       <hr />
       <?php render_yes_no_option('program_number_decrement_on_delete','decrement_program_number_on_delete','decrement_program_number_on_delete_tooltip'); ?>
       <hr />
+      <?php echo render_yes_no_option('inspector_staff_only_view_programs_assigned','inspector_staff_only_view_programs_assigned'); ?>
+      <hr />
       <?php echo render_yes_no_option('allow_staff_view_programs_assigned','allow_staff_view_programs_assigned'); ?>
       <hr />
       <?php render_yes_no_option('view_program_only_logged_in','require_client_logged_in_to_view_program'); ?>
@@ -48,8 +50,17 @@
       ?>
       <hr />
       <?php render_yes_no_option('exclude_program_from_client_area_with_draft_state','exclude_program_from_client_area_with_draft_state'); ?>
-      <hr />   
+      <hr />
       <?php render_yes_no_option('program_accept_identity_confirmation','program_accept_identity_confirmation'); ?>
+      <hr />
+      <i class="fa fa-question-circle pull-left" data-toggle="tooltip" data-title="<?php echo _l('its_could_be_dangeous'); ?>"></i>
+      <?php render_yes_no_option('allow_inspector_staff_view_programs_in_same_institution','allow_inspector_staff_view_programs_in_same_institution'); ?>
+      <hr />
+      <i class="fa fa-question-circle pull-left" data-toggle="tooltip" data-title="<?php echo _l('its_could_be_dangeous'); ?>"></i>
+      <?php render_yes_no_option('allow_surveyor_staff_view_programs_in_same_institution','allow_surveyor_staff_view_programs_in_same_institution'); ?>
+      <hr />
+      <i class="fa fa-question-circle pull-left" data-toggle="tooltip" data-title="<?php echo _l('its_could_be_dangeous'); ?>"></i>
+      <?php render_yes_no_option('allow_surveyor_staff_view_programs_in_same_inspector','allow_surveyor_staff_view_programs_in_same_inspector'); ?>
       <hr />
       <?php echo render_input('settings[program_year]','program_year',get_option('program_year'), 'number', ['min'=>2020]); ?>
       <hr />

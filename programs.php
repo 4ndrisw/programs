@@ -125,6 +125,7 @@ function programs_permissions()
 
     $capabilities['capabilities'] = [
             'view'   => _l('permission_view') . '(' . _l('permission_global') . ')',
+            'view_own'   => _l('permission_view_own'),
             'create' => _l('permission_create'),
             'edit'   => _l('permission_edit'),
             'delete' => _l('permission_delete'),

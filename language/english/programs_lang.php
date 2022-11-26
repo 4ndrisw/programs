@@ -171,6 +171,13 @@ $lang['program_table_nomor_seri_heading'] = 'Serial No.';
 $lang['program_table_nomor_unit_heading'] = 'Unit No.';
 $lang['program_table_qty_heading'] = ' Qty';
 
+$lang['allow_inspector_staff_view_programs_in_same_institution'] = 'Allow inspector staff view_programs in same Institution';
+$lang['allow_surveyor_staff_view_programs_in_same_inspector'] = 'Allow surveyor staff view_programs in same inspector';
+$lang['allow_surveyor_staff_view_programs_in_same_institution'] = 'Allow surveyor staff view_programs in same Institution';
+$lang['its_could_be_dangeous'] = 'Its could be dangeous';
+$lang['inspector_staff_only_view_programs_assigned'] = 'Inspector staff only to view programs where they are assigned to';
+
+
 /*
 
 # Programs

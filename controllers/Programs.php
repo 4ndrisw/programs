@@ -122,6 +122,7 @@ class Programs extends AdminController
                 if (!has_permission('programs', '', 'edit')) {
                     access_denied('programs');
                 }
+                
                 $success = $this->programs_model->update($program_data, $id);
                 if ($success) {
                     set_alert('success', _l('updated_successfully', _l('program')));
@@ -154,31 +155,11 @@ class Programs extends AdminController
         if ($this->input->get('program_request_id')) {
             $data['program_request_id'] = $this->input->get('program_request_id');
         }
-        /*
-        $this->load->model('taxes_model');
-        $data['taxes'] = $this->taxes_model->get();
-        $this->load->model('currencies_model');
-        $data['currencies'] = $this->currencies_model->get();
-        */
-        //$data['base_currency'] = $this->currencies_model->get_base_currency();
-        /*
-        $this->load->model('invoice_items_model');
 
-        $data['ajaxItems'] = false;
-        if (total_rows(db_prefix() . 'items') <= ajax_on_total_items()) {
-            $data['items'] = $this->invoice_items_model->get_grouped();
-        } else {
-            $data['items']     = [];
-            $data['ajaxItems'] = true;
-        }
-        */
 
-        //$data['items_groups'] = $this->invoice_items_model->get_groups();
-        
         $data['staff']             = $this->staff_model->get('', ['active' => 1]);
         $data['program_states'] = $this->programs_model->get_states();
         $data['title']             = $title;
-//        $this->load->view(module_views_path('programs','admin/programs/program'), $data);
         $this->load->view('admin/programs/program', $data);
     }
     
@@ -260,6 +241,11 @@ class Programs extends AdminController
 
         if (!$id) {
             die('No program found');
+        }
+        
+        if(get_option('inspector_staff_only_view_programs_assigned') && get_programs_where_sql_for_staff(get_staff_user_id())){
+            echo _l('access_denied');
+            die;
         }
 
         $program = $this->programs_model->get($id);
