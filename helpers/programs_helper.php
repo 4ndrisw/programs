@@ -326,13 +326,13 @@ function program_number_format($number, $format, $applied_prefix, $date)
  * @param  mixed $state          program state
  * @return array
  */
-function get_programs_percent_by_state($state, $project_id = null)
+function get_programs_percent_by_state($state, $program_id = null)
 {
     $has_permission_view = has_permission('programs', '', 'view');
     $where               = '';
 
-    if (isset($project_id)) {
-        $where .= 'project_id=' . get_instance()->db->escape_str($project_id) . ' AND ';
+    if (isset($program_id)) {
+        $where .= 'program_id=' . get_instance()->db->escape_str($program_id) . ' AND ';
     }
     if (!$has_permission_view) {
         $where .= get_programs_where_sql_for_staff(get_staff_user_id());
@@ -663,7 +663,7 @@ function _format_data_program_feature($data)
         $data['data']['adminnote'] = nl2br($data['data']['adminnote']);
     }
 
-    foreach (['country', 'billing_country', 'shipping_country', 'project_id', 'assigned'] as $should_be_zero) {
+    foreach (['country', 'billing_country', 'shipping_country', 'program_id', 'assigned'] as $should_be_zero) {
         if (isset($data['data'][$should_be_zero]) && $data['data'][$should_be_zero] == '') {
             $data['data'][$should_be_zero] = 0;
         }
@@ -719,13 +719,62 @@ function handle_removed_program_item_post($id, $rel_type)
 }
 
 /**
- * Check if customer has project assigned
+ * Check if customer has program assigned
  * @param  mixed $customer_id customer id to check
  * @return boolean
  */
-function project_has_programs($project_id)
+function program_has_programs($program_id)
 {
-    $totalProjectsProgramd = total_rows(db_prefix() . 'programs', 'project_id=' . get_instance()->db->escape_str($project_id));
+    $totalProjectsProgramd = total_rows(db_prefix() . 'programs', 'program_id=' . get_instance()->db->escape_str($program_id));
 
     return ($totalProjectsProgramd > 0 ? true : false);
+}
+
+
+
+function get_program_states()
+{
+    $states = hooks()->apply_filters('before_get_program_states', [
+        [
+            'id'             => 1,
+            'color'          => '#475569',
+            'name'           => _l('program_state_1'),
+            'order'          => 1,
+            'filter_default' => true,
+        ],
+        [
+            'id'             => 2,
+            'color'          => '#2563eb',
+            'name'           => _l('program_state_2'),
+            'order'          => 2,
+            'filter_default' => true,
+        ],
+        [
+            'id'             => 3,
+            'color'          => '#f97316',
+            'name'           => _l('program_state_3'),
+            'order'          => 3,
+            'filter_default' => true,
+        ],
+        [
+            'id'             => 4,
+            'color'          => '#16a34a',
+            'name'           => _l('program_state_4'),
+            'order'          => 100,
+            'filter_default' => false,
+        ],
+        [
+            'id'             => 5,
+            'color'          => '#94a3b8',
+            'name'           => _l('program_state_5'),
+            'order'          => 4,
+            'filter_default' => false,
+        ],
+    ]);
+
+    usort($states, function ($a, $b) {
+        return $a['order'] - $b['order'];
+    });
+
+    return $states;
 }
