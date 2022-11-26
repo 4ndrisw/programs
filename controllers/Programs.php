@@ -243,7 +243,7 @@ class Programs extends AdminController
             die('No program found');
         }
         
-        if(get_option('inspector_staff_only_view_programs_assigned') && get_programs_where_sql_for_staff(get_staff_user_id())){
+        if(is_inspector_staff(get_staff_user_id()) && get_option('inspector_staff_only_view_programs_assigned') && !inspector_staff_has_program($id,get_staff_user_id())){
             echo _l('access_denied');
             die;
         }

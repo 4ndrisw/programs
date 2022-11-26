@@ -31,7 +31,7 @@
         </a>
       </li>
       <li>
-        <a href="#" data-cview="not_invoiced" onclick="dt_custom_view('not_invoiced','.table-programs','not_invoiced'); return false;"><?php echo _l('programs_not_invoiced'); ?></a>
+        <a href="#" data-cview="not_inspected" onclick="dt_custom_view('not_inspected','.table-programs','not_inspected'); return false;"><?php echo _l('programs_not_inspected'); ?></a>
       </li>
       <li class="divider"></li>
       <?php foreach($program_states as $state){ ?>

@@ -46,7 +46,7 @@ if ($this->ci->input->post('invoiced')) {
     array_push($filter, 'OR inspectionid IS NOT NULL');
 }
 
-if ($this->ci->input->post('not_invoiced')) {
+if ($this->ci->input->post('not_inspected')) {
     array_push($filter, 'OR inspectionid IS NULL');
 }
 $states  = $this->ci->programs_model->get_states();

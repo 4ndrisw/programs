@@ -52,7 +52,7 @@ class Myprogram extends ClientsController
                 if (is_array($success)) {
                     if ($action == 4) {
                         $accepted = true;
-                        set_alert('success', _l('clients_program_accepted_not_invoiced'));
+                        set_alert('success', _l('clients_program_accepted_not_inspected'));
                     } else {
                         set_alert('success', _l('clients_program_declined'));
                     }
@@ -179,7 +179,7 @@ class Myprogram extends ClientsController
                 if (is_array($success)) {
                     if ($action == 4) {
                         $accepted = true;
-                        set_alert('success', _l('clients_program_accepted_not_invoiced'));
+                        set_alert('success', _l('clients_program_accepted_not_inspected'));
                     } else {
                         set_alert('success', _l('clients_program_declined'));
                     }

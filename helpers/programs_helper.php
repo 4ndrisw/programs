@@ -455,13 +455,13 @@ function user_can_view_program($id, $staff_id = false)
         return true;
     }
     
-    $CI->db->select('id, addedfrom, number');
+    $CI->db->select('id, addedfrom, number, inspector_staff_id');
     $CI->db->from(db_prefix() . 'programs');
     $CI->db->where('id', $id);
     $program = $CI->db->get()->row();
-
+    
     if ((has_permission('programs', $staff_id, 'view_own') && $program->addedfrom == $staff_id)
-        || ($program->clientid == $staff_id && get_option('allow_staff_view_programs_assigned') == '1')
+        || ($program->inspector_staff_id == $staff_id && get_option('allow_staff_view_programs_assigned') == '1')
     ) {
         return true;
     }
@@ -743,6 +743,13 @@ function program_has_programs($program_id)
     return ($totalProjectsProgramd > 0 ? true : false);
 }
 
+
+function inspector_staff_has_program($id, $staff_id){
+    $CI = &get_instance();
+    $CI->db->select('id');
+    $CI->db->where('inspector_staff_id', $staff_id);
+    return (bool)$CI->db->get(db_prefix() . 'programs')->result();
+}
 
 
 function get_program_states()
