@@ -1,0 +1,35 @@
+
+.program-update{ background-color:#ddd; }
+
+body #program-preview .program-items table tbody td.description span{
+    color: #d1d3ea !important;
+}
+
+.customers.viewprogram #wrapper{
+    margin-left: 0;
+}
+
+@media (max-width: 1430px){
+    .customers.viewprogram .panel_s {
+        width: 100%;
+    }
+}
+
+tr.has-row-options-2 a,
+tr.has-row-options-2,
+tr.program_state_2 {
+    background: #004803;
+}
+
+tr.has-row-options-1 a,
+tr.has-row-options-1,
+tr.program_state_1 {
+    background: #b7ab00;
+    color: #000;
+}
+
+.client-template .select-placeholder label, .client-template .select-placeholder label small {
+    --tw-blur: blur(4px);
+    filter: inherit;
+    /* opacity: 17.6; */
+}

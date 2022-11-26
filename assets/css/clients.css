@@ -1,0 +1,6 @@
+
+.client-template .select-placeholder label, .client-template .select-placeholder label small {
+    --tw-blur: blur(4px);
+    filter: inherit;
+    /* opacity: 17.6; */
+}
