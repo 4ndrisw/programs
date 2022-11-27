@@ -227,22 +227,22 @@
                            ?>
                      </ul>
                   </div>
-                  <?php if(isset($program->inspection_id) && $program->inspection_id == NULL){ ?>
-                  <?php if(staff_can('create', 'inspections') && !empty($program->clientid)){ ?>
-                  <div class="btn-group pull-right mleft5">
-                     <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                     <?php echo _l('program_convert_to_inspection'); ?> <span class="caret"></span>
-                     </button>
-                     <ul class="dropdown-menu">
-                        <li><a href="<?php echo admin_url('programs/convert_to_inspection/'.$program->id.'?save_as_draft=true'); ?>"><?php echo _l('convert_and_save_as_draft'); ?></a></li>
-                        <li class="divider">
-                        <li><a href="<?php echo admin_url('programs/convert_to_inspection/'.$program->id); ?>"><?php echo _l('convert'); ?></a></li>
-                        </li>
-                     </ul>
-                  </div>
-                  <?php } ?>
-                  <?php } else { ?>
-                  <a href="<?php //echo admin_url('inspections/list_inspections/'.$program->inspection->id); ?>" data-placement="bottom" data-toggle="tooltip" title="<?php //echo _l('program_inspection_date',_dt($program->inspection_date)); ?>"class="btn mleft10 btn-info"><?php //echo format_inspection_number($program->inspection->id); ?></a>
+                     <?php if($program->inspection_id == NULL){ ?>
+                        <?php if(staff_can('create', 'inspections') && !empty($program->clientid)){ ?>
+                        <div class="btn-group pull-right mleft5">
+                           <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           <?php echo _l('program_convert_to_inspection'); ?> <span class="caret"></span>
+                           </button>
+                           <ul class="dropdown-menu">
+                              <li><a href="<?php echo admin_url('programs/convert_to_inspection/'.$program->id.'?save_as_draft=true'); ?>"><?php echo _l('convert_and_save_as_draft'); ?></a></li>
+                              <li class="divider">
+                              <li><a href="<?php echo admin_url('programs/convert_to_inspection/'.$program->id); ?>"><?php echo _l('convert'); ?></a></li>
+                              </li>
+                           </ul>
+                        </div>
+                        <?php } ?>
+                     <?php } else { ?>                     
+                  <a href="<?php echo admin_url('inspections/list_inspections/'.$program->inspection->id); ?>" data-placement="bottom" data-toggle="tooltip" title="<?php echo _l('program_inspection_date',_dt($program->inspection_date)); ?>"class="btn mleft10 btn-info"><?php echo format_inspection_number($program->inspection->id); ?></a>
                   <?php } ?>
                </div>
             </div>

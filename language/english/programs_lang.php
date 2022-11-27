@@ -185,6 +185,7 @@ $lang['process'] = 'Process';
 $lang['program_item_plan'] = 'Program item planned';
 $lang['program_item_proposed'] = 'Program item proposed';
 $lang['program_item_submitted'] = 'Program item proposed';
+$lang['propose_this_item'] = 'Propose this item';
 
 
 

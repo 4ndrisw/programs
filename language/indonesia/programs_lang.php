@@ -173,6 +173,9 @@ $lang['inspector_staff_only_view_programs_assigned'] = 'Pengawas K3 hanya dibole
 $lang['no_programs_found']                      = 'Tidak Ada Pekerjaan Ditemukan';
 $lang['program_not_found']                                 = 'Pekerjaan tidak ditemukan';
 
+
+$lang['propose_this_item'] = 'Ajukankan alat ini';
+
 /*
 
 
