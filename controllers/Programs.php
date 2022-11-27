@@ -275,6 +275,7 @@ class Programs extends AdminController
         $program->date       = _d($program->date);
         $program->duedate = _d($program->duedate);
         if (isset($program->inspection_id) && $program->inspection_id !== null) {
+            include_once(FCPATH . 'modules/inspections/models/inspections_model.php');
             $this->load->model('inspections_model');
             $program->inspection = $this->inspections_model->get($program->inspection_id);
         }
@@ -443,9 +444,9 @@ class Programs extends AdminController
         if (!$id) {
             die('No program found');
         }
-        $draft_invoice = false;
+        $draft_inspection = false;
         if ($this->input->get('save_as_draft')) {
-            $draft_invoice = true;
+            $draft_inspection = true;
         }
         $inspection_id = $this->programs_model->convert_to_inspection($id, false, $draft_inspection);
         if ($inspection_id) {
