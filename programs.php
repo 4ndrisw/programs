@@ -179,7 +179,7 @@ function programs_module_init_menu_items()
             'position'   => 57,
             ]);
 
-    if (has_permission('programs', '', 'view')) {
+    if (has_permission('programs', '', 'view') || has_permission('programs', '', 'view_own')) {
         $CI->app_menu->add_sidebar_menu_item('programs', [
                 'slug'     => 'programs-tracking',
                 'name'     => _l('programs'),

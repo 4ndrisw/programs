@@ -79,9 +79,10 @@ function program_mark_as(state_id, program_id) {
     });
 }
 
-function programs_add_program_item(clientid, inspector_id, inspector_staff_id, surveyor_id, program_id, peralatan_id) {
+function programs_add_program_item(clientid, institution_id, inspector_id, inspector_staff_id, surveyor_id, program_id, peralatan_id) {
     var data = {};
     data.clientid = clientid;
+    data.institution_id = institution_id;
     data.inspector_id = inspector_id;
     data.inspector_staff_id = inspector_staff_id;
     data.surveyor_id = surveyor_id;
@@ -92,6 +93,23 @@ function programs_add_program_item(clientid, inspector_id, inspector_staff_id, s
         reload_programs_tables();
     });
 }
+
+
+function programs_remove_program_item(clientid, institution_id, inspector_id, inspector_staff_id, surveyor_id, program_id, peralatan_id) {
+    var data = {};
+    data.clientid = clientid;
+    data.institution_id = institution_id;
+    data.inspector_id = inspector_id;
+    data.inspector_staff_id = inspector_staff_id;
+    data.surveyor_id = surveyor_id;
+    data.program_id = program_id;
+    data.peralatan_id = peralatan_id;
+    console.log(data);
+    $.post(admin_url + 'programs/remove_program_item', data).done(function (response) {
+        reload_programs_tables();
+    });
+}
+
 
 function reload_programs_tables() {
     var av_programs_tables = ['.table-programs', '.table-rel-programs', '.table-program-items', '.table-program-items-submitted','.table-program-related'];

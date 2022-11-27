@@ -128,49 +128,49 @@ class Programs_model extends App_Model
         // Recurring invoice date is okey lets convert it to new invoice
         $_program = $this->get($id);
 
-        $new_invoice_data = [];
+        $new_inspection_data = [];
         if ($draft_invoice == true) {
-            $new_invoice_data['save_as_draft'] = true;
+            $new_inspection_data['save_as_draft'] = true;
         }
-        $new_invoice_data['clientid']   = $_program->clientid;
-        $new_invoice_data['project_id'] = $_program->project_id;
-        $new_invoice_data['number']     = get_option('next_invoice_number');
-        $new_invoice_data['date']       = _d(date('Y-m-d'));
-        $new_invoice_data['duedate']    = _d(date('Y-m-d'));
-        if (get_option('invoice_due_after') != 0) {
-            $new_invoice_data['duedate'] = _d(date('Y-m-d', strtotime('+' . get_option('invoice_due_after') . ' DAY', strtotime(date('Y-m-d')))));
-        }
-        $new_invoice_data['show_quantity_as'] = $_program->show_quantity_as;
-        $new_invoice_data['currency']         = $_program->currency;
-        $new_invoice_data['subtotal']         = $_program->subtotal;
-        $new_invoice_data['total']            = $_program->total;
-        $new_invoice_data['adjustment']       = $_program->adjustment;
-        $new_invoice_data['discount_percent'] = $_program->discount_percent;
-        $new_invoice_data['discount_total']   = $_program->discount_total;
-        $new_invoice_data['discount_type']    = $_program->discount_type;
-        $new_invoice_data['inspector_staff_id']       = $_program->inspector_staff_id;
+        $new_inspection_data['clientid']   = $_program->clientid;
+        $new_inspection_data['program_id'] = $_program->id;
+        $new_inspection_data['government_id'] = $_program->government_id;
+        $new_inspection_data['institution_id'] = $_program->institution_id;
+        $new_inspection_data['inspector_id'] = $_program->inspector_id;
+        $new_inspection_data['inspector_id'] = $_program->inspector_staff_id;
+        $new_inspection_data['number']     = get_option('next_invoice_number');
+        $new_inspection_data['date']       = _d(date('Y-m-d'));
+
+        $new_inspection_data['show_quantity_as'] = $_program->show_quantity_as;
+        $new_inspection_data['currency']         = $_program->currency;
+        $new_inspection_data['subtotal']         = $_program->subtotal;
+        $new_inspection_data['total']            = $_program->total;
+        $new_inspection_data['adjustment']       = $_program->adjustment;
+        $new_inspection_data['discount_percent'] = $_program->discount_percent;
+        $new_inspection_data['discount_total']   = $_program->discount_total;
+        $new_inspection_data['discount_type']    = $_program->discount_type;
         // Since version 1.0.6
-        $new_invoice_data['billing_street']   = clear_textarea_breaks($_program->billing_street);
-        $new_invoice_data['billing_city']     = $_program->billing_city;
-        $new_invoice_data['billing_state']    = $_program->billing_state;
-        $new_invoice_data['billing_zip']      = $_program->billing_zip;
-        $new_invoice_data['billing_country']  = $_program->billing_country;
-        $new_invoice_data['shipping_street']  = clear_textarea_breaks($_program->shipping_street);
-        $new_invoice_data['shipping_city']    = $_program->shipping_city;
-        $new_invoice_data['shipping_state']   = $_program->shipping_state;
-        $new_invoice_data['shipping_zip']     = $_program->shipping_zip;
-        $new_invoice_data['shipping_country'] = $_program->shipping_country;
+        $new_inspection_data['billing_street']   = clear_textarea_breaks($_program->billing_street);
+        $new_inspection_data['billing_city']     = $_program->billing_city;
+        $new_inspection_data['billing_state']    = $_program->billing_state;
+        $new_inspection_data['billing_zip']      = $_program->billing_zip;
+        $new_inspection_data['billing_country']  = $_program->billing_country;
+        $new_inspection_data['shipping_street']  = clear_textarea_breaks($_program->shipping_street);
+        $new_inspection_data['shipping_city']    = $_program->shipping_city;
+        $new_inspection_data['shipping_state']   = $_program->shipping_state;
+        $new_inspection_data['shipping_zip']     = $_program->shipping_zip;
+        $new_inspection_data['shipping_country'] = $_program->shipping_country;
 
         if ($_program->include_shipping == 1) {
-            $new_invoice_data['include_shipping'] = 1;
+            $new_inspection_data['include_shipping'] = 1;
         }
 
-        $new_invoice_data['show_shipping_on_invoice'] = $_program->show_shipping_on_program;
-        $new_invoice_data['terms']                    = get_option('predefined_terms_invoice');
-        $new_invoice_data['clientnote']               = get_option('predefined_clientnote_invoice');
+        //$new_inspection_data['show_shipping_on_invoice'] = $_program->show_shipping_on_program;
+        $new_inspection_data['terms']                    = get_option('predefined_terms_invoice');
+        $new_inspection_data['clientnote']               = get_option('predefined_clientnote_invoice');
         // Set to unpaid state automatically
-        $new_invoice_data['state']    = 1;
-        $new_invoice_data['adminnote'] = '';
+        $new_inspection_data['state']    = 1;
+        $new_inspection_data['adminnote'] = '';
 
         $this->load->model('payment_modes_model');
         $modes = $this->payment_modes_model->get('', [
@@ -183,25 +183,25 @@ class Programs_model extends App_Model
             }
             $temp_modes[] = $mode['id'];
         }
-        $new_invoice_data['allowed_payment_modes'] = $temp_modes;
-        $new_invoice_data['newitems']              = [];
+        //$new_inspection_data['allowed_payment_modes'] = $temp_modes;
+        $new_inspection_data['newitems']              = [];
         $custom_fields_items                       = get_custom_fields('items');
         $key                                       = 1;
         foreach ($_program->items as $item) {
-            $new_invoice_data['newitems'][$key]['description']      = $item['description'];
-            $new_invoice_data['newitems'][$key]['long_description'] = clear_textarea_breaks($item['long_description']);
-            $new_invoice_data['newitems'][$key]['qty']              = $item['qty'];
-            $new_invoice_data['newitems'][$key]['unit']             = $item['unit'];
-            $new_invoice_data['newitems'][$key]['taxname']          = [];
+            $new_inspection_data['newitems'][$key]['description']      = $item['description'];
+            $new_inspection_data['newitems'][$key]['long_description'] = clear_textarea_breaks($item['long_description']);
+            $new_inspection_data['newitems'][$key]['qty']              = $item['qty'];
+            $new_inspection_data['newitems'][$key]['unit']             = $item['unit'];
+            $new_inspection_data['newitems'][$key]['taxname']          = [];
             $taxes                                                  = get_program_item_taxes($item['id']);
             foreach ($taxes as $tax) {
                 // tax name is in format TAX1|10.00
-                array_push($new_invoice_data['newitems'][$key]['taxname'], $tax['taxname']);
+                array_push($new_inspection_data['newitems'][$key]['taxname'], $tax['taxname']);
             }
-            $new_invoice_data['newitems'][$key]['rate']  = $item['rate'];
-            $new_invoice_data['newitems'][$key]['order'] = $item['item_order'];
+            $new_inspection_data['newitems'][$key]['rate']  = $item['rate'];
+            $new_inspection_data['newitems'][$key]['order'] = $item['item_order'];
             foreach ($custom_fields_items as $cf) {
-                $new_invoice_data['newitems'][$key]['custom_fields']['items'][$cf['id']] = get_custom_field_value($item['id'], $cf['id'], 'items', false);
+                $new_inspection_data['newitems'][$key]['custom_fields']['items'][$cf['id']] = get_custom_field_value($item['id'], $cf['id'], 'items', false);
 
                 if (!defined('COPY_CUSTOM_FIELDS_LIKE_HANDLE_POST')) {
                     define('COPY_CUSTOM_FIELDS_LIKE_HANDLE_POST', true);
@@ -209,22 +209,28 @@ class Programs_model extends App_Model
             }
             $key++;
         }
-        $this->load->model('invoices_model');
-        $id = $this->invoices_model->add($new_invoice_data);
+        
+        include_once(FCPATH . 'modules/inspections/models/inspections_model.php');
+
+        $this->load->model('inspections_model');
+        $id = $this->inspections_model->add($new_inspection_data);
+        
+
+        //$id = _convert_to_inspection($new_inspection_data);
         if ($id) {
             // Customer accepted the program and is auto converted to invoice
             if (!is_staff_logged_in()) {
                 $this->db->where('rel_type', 'invoice');
                 $this->db->where('rel_id', $id);
                 $this->db->delete(db_prefix() . 'sales_activity');
-                $this->invoices_model->log_invoice_activity($id, 'invoice_activity_auto_converted_from_program', true, serialize([
+                $this->inspections_model->log_invoice_activity($id, 'invoice_activity_auto_converted_from_program', true, serialize([
                     '<a href="' . admin_url('programs/list_programs/' . $_program->id) . '">' . format_program_number($_program->id) . '</a>',
                 ]));
             }
             // For all cases update addefrom and sale agent from the invoice
             // May happen staff is not logged in and these values to be 0
             $this->db->where('id', $id);
-            $this->db->update(db_prefix() . 'invoices', [
+            $this->db->update(db_prefix() . 'inspections', [
                 'addedfrom'  => $_program->addedfrom,
                 'inspector_staff_id' => $_program->inspector_staff_id,
             ]);
@@ -232,12 +238,12 @@ class Programs_model extends App_Model
             // Update program with the new invoice data and set to state accepted
             $this->db->where('id', $_program->id);
             $this->db->update(db_prefix() . 'programs', [
-                'invoiced_date' => date('Y-m-d H:i:s'),
-                'invoiceid'     => $id,
+                'inspection_date' => date('Y-m-d H:i:s'),
+                'inspection_id'     => $id,
                 'state'        => 4,
             ]);
 
-
+            /*
             if (is_custom_fields_smart_transfer_enabled()) {
                 $this->db->where('fieldto', 'program');
                 $this->db->where('active', 1);
@@ -277,10 +283,11 @@ class Programs_model extends App_Model
                     }
                 }
             }
+            */
 
             if ($client == false) {
                 $this->log_program_activity($_program->id, 'program_activity_converted', false, serialize([
-                    '<a href="' . admin_url('invoices/list_invoices/' . $id) . '">' . format_invoice_number($id) . '</a>',
+                    '<a href="' . admin_url('inspections/list_inspections/' . $id) . '">' . format_invoice_number($id) . '</a>',
                 ]));
             }
 
@@ -493,7 +500,6 @@ class Programs_model extends App_Model
         }
 
         $data['hash'] = app_generate_hash();
-        $tags         = isset($data['tags']) ? $data['tags'] : '';
 
         $items = [];
         if (isset($data['newitems'])) {
@@ -573,7 +579,7 @@ class Programs_model extends App_Model
     {
         $this->db->where('id', $id);
 
-        return $this->db->get(db_prefix() . 'program_item')->row();
+        return $this->db->get(db_prefix() . 'program_items')->row();
     }
 
     /**
@@ -802,8 +808,8 @@ class Programs_model extends App_Model
                 $this->db->or_where('staffid', $program->inspector_staff_id);
                 $staff_program = $this->db->get(db_prefix() . 'staff')->result_array();
 
-                $invoiceid = false;
-                $invoiced  = false;
+                $inspection_id = false;
+                $inspectioned  = false;
 
                 $contact_id = !is_client_logged_in()
                     ? get_primary_contact_user_id($program->clientid)
@@ -811,13 +817,13 @@ class Programs_model extends App_Model
 
                 if ($action == 4) {
                     if (get_option('program_auto_convert_to_inspection_on_client_accept') == 1) {
-                        $invoiceid = $this->convert_to_inspection($id, true);
-                        $this->load->model('invoices_model');
-                        if ($invoiceid) {
-                            $invoiced = true;
-                            $invoice  = $this->invoices_model->get($invoiceid);
+                        $inspection_id = $this->convert_to_inspection($id, true);
+                        $this->load->model('inspections_model');
+                        if ($inspection_id) {
+                            $inspectioned = true;
+                            $inspection  = $this->inspections_model->get($inspection_id);
                             $this->log_program_activity($id, 'program_activity_client_accepted_and_converted', true, serialize([
-                                '<a href="' . admin_url('invoices/list_invoices/' . $invoiceid) . '">' . format_invoice_number($invoice->id) . '</a>',
+                                '<a href="' . admin_url('inspections/list_inspections/' . $inspection_id) . '">' . format_invoice_number($inspection->id) . '</a>',
                             ]));
                         }
                     } else {
@@ -853,8 +859,8 @@ class Programs_model extends App_Model
                     hooks()->do_action('program_accepted', $id);
 
                     return [
-                        'invoiced'  => $invoiced,
-                        'invoiceid' => $invoiceid,
+                        'inspectioned'  => $inspectioned,
+                        'inspection_id' => $inspection_id,
                     ];
                 } elseif ($action == 3) {
                     foreach ($staff_program as $member) {
@@ -880,8 +886,8 @@ class Programs_model extends App_Model
                     hooks()->do_action('program_declined', $id);
 
                     return [
-                        'invoiced'  => $invoiced,
-                        'invoiceid' => $invoiceid,
+                        'inspectioned'  => $inspectioned,
+                        'inspection_id' => $inspection_id,
                     ];
                 }
             } else {
@@ -970,9 +976,9 @@ class Programs_model extends App_Model
             }
         }
         $program = $this->get($id);
-        if (!is_null($program->invoiceid) && $simpleDelete == false) {
+        if (!is_null($program->inspection_id) && $simpleDelete == false) {
             return [
-                'is_invoiced_program_delete_error' => true,
+                'is_inspectioned_program_delete_error' => true,
             ];
         }
         hooks()->do_action('before_program_deleted', $id);
@@ -1403,24 +1409,9 @@ class Programs_model extends App_Model
                 'ahli_k3_skp'              => $ahli_k3_skp]);
     }
 
-    public function program_add_program_item($data){
+    public function programs_add_program_item($data){
 
         log_activity(json_encode($data));
-        /*
-        $category = get_option('tag_id_'.$data['tag_id']);
-        $user_id = get_option('default_inspection_assigned_' . $category);
-        $ahli_k3_nama = get_staff_full_name($user_id);
-        $ahli_k3_skp = get_option('default_inspection_skp_' . $category);
-        
-        $this->db->insert(db_prefix() . 'program_items', [
-                'inspection_id'      => $data['inspection_id'],
-                'project_id' => $data['project_id'],
-                'task_id'              => $data['task_id'],
-                'category'              => $category,
-                'tag_id'              => $data['tag_id'],
-                'ahli_k3_nama'              => $ahli_k3_nama,
-                'ahli_k3_skp'              => $ahli_k3_skp]);
-        */
         $peralatan = get_peralatan($data['peralatan_id']);
         $data['nama_pesawat'] = $peralatan->subject;
         $data['jenis_pesawat'] = $peralatan->jenis_pesawat;
@@ -1433,12 +1424,7 @@ class Programs_model extends App_Model
         $data['nomor_unit'] = $peralatan->nomor_unit;
         $data['addedfrom'] = get_staff_user_id();
 
-
-         log_activity(json_encode($data));
-         
-
         $this->db->insert(db_prefix() . 'program_items', $data);
-
     }
 
 

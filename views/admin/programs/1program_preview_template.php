@@ -14,6 +14,7 @@
                      <?php echo _l('program'); ?>
                      </a>
                   </li>
+
                   <li role="presentation">
                      <a href="#tab_program_items" onclick="initDataTable('.table-program_items', admin_url + 'programs/get_program_items_table/'
                                                                                        + <?php echo $program->clientid ;?> + '/'
@@ -35,6 +36,8 @@
                         ?>
                      </a>
                   </li>
+
+
                   <!--
                   <li role="presentation">
                      <a href="#tab_tasks" onclick="init_rel_tasks_table(<?php //echo $program->id; ?>,'program'); return false;" aria-controls="tab_tasks" role="tab" data-toggle="tab">
@@ -46,6 +49,7 @@
                   <li role="presentation">
                      <a href="#tab_peralatan" onclick="initDataTable('.table-peralatan', admin_url + 'programs/get_peralatan_table/'
                                                                                        + <?php echo $program->clientid ;?> + '/'
+                                                                                       + <?php echo $program->institution_id ;?> + '/'
                                                                                        + <?php echo $program->inspector_id ;?> + '/'
                                                                                        + <?php echo $program->inspector_staff_id ;?> + '/'
                                                                                        + <?php echo $program->surveyor_id ?> + '/'
@@ -223,8 +227,8 @@
                            ?>
                      </ul>
                   </div>
-                  <?php if($program->inspection_id == NULL){ ?>
-                  <?php if(staff_can('create', 'invoices') && !empty($program->clientid)){ ?>
+                  <?php if(isset($program->inspection_id) && $program->inspection_id == NULL){ ?>
+                  <?php if(staff_can('create', 'inspections') && !empty($program->clientid)){ ?>
                   <div class="btn-group pull-right mleft5">
                      <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                      <?php echo _l('program_convert_to_inspection'); ?> <span class="caret"></span>
@@ -238,7 +242,7 @@
                   </div>
                   <?php } ?>
                   <?php } else { ?>
-                  <a href="<?php echo admin_url('invoices/list_invoices/'.$program->invoice->id); ?>" data-placement="bottom" data-toggle="tooltip" title="<?php echo _l('program_invoiced_date',_dt($program->invoiced_date)); ?>"class="btn mleft10 btn-info"><?php echo format_invoice_number($program->invoice->id); ?></a>
+                  <a href="<?php //echo admin_url('inspections/list_inspections/'.$program->inspection->id); ?>" data-placement="bottom" data-toggle="tooltip" title="<?php //echo _l('program_inspection_date',_dt($program->inspection_date)); ?>"class="btn mleft10 btn-info"><?php //echo format_inspection_number($program->inspection->id); ?></a>
                   <?php } ?>
                </div>
             </div>

@@ -3,15 +3,15 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 $aColumns = [
-    'subject',
+    'nama_pesawat',
     'nomor_seri',
     'nomor_unit',
-    'open_till',
+    'kelompok_alat',
     '1',
     ];
 
 $sIndexColumn = 'id';
-$sTable       = db_prefix().'peralatan';
+$sTable       = db_prefix().'program_items';
 
 $where        = [
     'AND clientid=' . $clientid,
@@ -21,7 +21,10 @@ $join = [
     ];
 $result = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, [
     'id',
-    'lokasi',
+    'institution_id',
+    'inspector_id',
+    'inspector_staff_id',
+    'surveyor_id',
     'clientid',
     ]);
 $output  = $result['output'];
@@ -30,6 +33,14 @@ foreach ($rResult as $aRow) {
     $row = [];
     for ($i = 0; $i < count($aColumns); $i++) {
         $_data = $aRow[$aColumns[$i]];
+
+
+
+
+
+
+
+
         if ($aColumns[$i] == 'staff') {
             $_data = '<a href="' . admin_url('staff/profile/' . $aRow['staff']) . '">' . staff_profile_image($aRow['staff'], [
                 'staff-profile-image-small',
@@ -53,7 +64,7 @@ foreach ($rResult as $aRow) {
             $_data = _dt($_data);
         }
         elseif ($aColumns[$i] == '1') {
-            $_data = '<a class="btn btn-success" title = "'._l('propose_this_item').'" href="#" onclick="programs_add_program_item(' . $clientid . ','. $institution_id . ',' . $inspector_id . ','. $inspector_staff_id  . ','. $surveyor_id . ','. $program_id . ',' . $aRow['id'] . ',' . '); return false;">+</a>';
+            $_data = '<a class="btn btn-danger" title = "'._l('propose_this_item').'" href="#" onclick="programs_remove_program_item(' . $clientid . ','. $inspector_id . ','. $inspector_staff_id  . ','. $surveyor_id . ','. $program_id . ',' . $aRow['id'] . ',' . '); return false;">X</a>';
         }
         $row[] = $_data;
     }

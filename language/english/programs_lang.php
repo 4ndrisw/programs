@@ -68,7 +68,7 @@ $lang['program_order']                  = 'To order the staff for';
 
 $lang['program_set_reminder_title']             = 'Set Program Reminder';
 $lang['program_invoiced']                        = 'Inspectioned';
-$lang['program_invoiced_date']                   = 'Inspectioned on %s';
+$lang['program_inspection_date']                   = 'Inspectioned on %s';
 $lang['edit_program_tooltip']                    = 'Edit program';
 $lang['delete_program_tooltip']                  = 'Delete program';
 $lang['program_sent_to_email_tooltip']           = 'Send to Email';
@@ -176,6 +176,16 @@ $lang['allow_surveyor_staff_view_programs_in_same_inspector'] = 'Allow surveyor 
 $lang['allow_surveyor_staff_view_programs_in_same_institution'] = 'Allow surveyor staff view_programs in same Institution';
 $lang['its_could_be_dangeous'] = 'Its could be dangeous';
 $lang['inspector_staff_only_view_programs_assigned'] = 'Inspector staff only to view programs where they are assigned to';
+
+$lang['program_items'] = 'Items';
+$lang['serial_number'] = 'Serial number';
+$lang['unit_number'] = 'Unit number';
+$lang['kelompok_alat'] = 'Category';
+$lang['process'] = 'Process';
+$lang['program_item_plan'] = 'Program item planned';
+$lang['program_item_proposed'] = 'Program item proposed';
+$lang['program_item_submitted'] = 'Program item proposed';
+
 
 
 /*
@@ -324,7 +334,7 @@ $lang['program']                                 = 'Program';
 $lang['create_new_program']                      = 'Create New Program';
 $lang['program_add_edit_number']                 = 'Program Number';
 $lang['program_add_edit_date']                   = 'Program Date';
-$lang['program_invoiced_date']                   = 'Program Invoiced on %s';
+$lang['program_inspection_date']                   = 'Program Invoiced on %s';
 $lang['edit_program_tooltip']                    = 'Edit Program';
 $lang['delete_program_tooltip']                  = 'Delete Program';
 $lang['program_dt_table_heading_number']         = 'Program #';

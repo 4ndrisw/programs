@@ -161,7 +161,7 @@ $lang['program_add_edit_duedate']                                   	= "Target s
 $lang['inspector_staff_id_string']                                   	= "Pengawas Disnaker";
 
 $lang['program_invoiced']                                  = 'Diinspeksi';
-$lang['program_invoiced_date']                  					= 'Pekerjaan telah diinspeksi pada %s';
+$lang['program_inspection_date']                  					= 'Pekerjaan telah diinspeksi pada %s';
 $lang['program_table_nomor_seri_heading'] = ' No. Seri';
 $lang['program_table_nomor_unit_heading'] = ' No. Unit';
 $lang['program_table_qty_heading'] = ' Jumlah';
@@ -397,7 +397,7 @@ $lang['programs_toggle_table_tooltip']     						= 'Alihkan Tabel';
 $lang['program_add_edit_advanced_options'] 						= 'Opsi Lanjutan';
 $lang['program_to']                        						= 'Kepada';
 $lang['programs_list_all']                 						= 'Semua';
-$lang['program_invoiced_date']                  					= 'Pekerjaan telah diberi Faktur pada %s';
+$lang['program_inspection_date']                  					= 'Pekerjaan telah diberi Faktur pada %s';
 $lang['edit_program_tooltip']                   					= 'Edit Pekerjaan';
 $lang['delete_program_tooltip']                 					= 'Hapus Pekerjaan';
 $lang['program_sent_to_email_tooltip']          					= 'Kirim ke Email';

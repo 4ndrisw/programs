@@ -18,11 +18,6 @@ $table_data = array(
    _l('reference_no'),
    _l('program_dt_table_heading_state'));
 
-$custom_fields = get_custom_fields('program',array('show_on_table'=>1));
-
-foreach($custom_fields as $field){
-   array_push($table_data,$field['name']);
-}
 
 $table_data = hooks()->apply_filters('programs_table_columns', $table_data);
 

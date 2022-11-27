@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
    if ($program['state'] == $state) { ?>
-<li data-program-id="<?php echo $program['id']; ?>" class="<?php if($program['invoiceid'] != NULL){echo 'not-sortable';} ?>">
+<li data-program-id="<?php echo $program['id']; ?>" class="<?php if($program['inspection_id'] != NULL){echo 'not-sortable';} ?>">
    <div class="panel-body">
       <div class="row">
          <div class="col-md-12">

@@ -43,11 +43,11 @@ if ($this->ci->input->post('not_sent')) {
     array_push($filter, 'OR (sent= 0 AND ' . db_prefix() . 'programs.state NOT IN (2,3,4))');
 }
 if ($this->ci->input->post('invoiced')) {
-    array_push($filter, 'OR inspectionid IS NOT NULL');
+    array_push($filter, 'OR inspection_id IS NOT NULL');
 }
 
 if ($this->ci->input->post('not_inspected')) {
-    array_push($filter, 'OR inspectionid IS NULL');
+    array_push($filter, 'OR inspection_id IS NULL');
 }
 $states  = $this->ci->programs_model->get_states();
 $stateIds = [];
@@ -128,8 +128,12 @@ if (count($custom_fields) > 4) {
 $result = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, [
     db_prefix() . 'programs.id',
     db_prefix() . 'programs.clientid',
-    db_prefix() . 'programs.inspectionid',
-    'project_id',
+    db_prefix() . 'programs.institution_id',
+    db_prefix() . 'programs.inspector_id',
+    db_prefix() . 'programs.inspector_staff_id',
+    db_prefix() . 'programs.surveyor_id',
+    db_prefix() . 'programs.inspection_id',
+    //'project_id',
     'deleted_customer_name',
     db_prefix() . 'programs.hash',
 ]);
@@ -174,7 +178,7 @@ foreach ($rResult as $aRow) {
 
     $inspector = get_inspector_name_by_id($aRow['inspector_id']);
 
-    if ($aRow['inspectionid']) {
+    if ($aRow['inspection_id']) {
         $inspector .= '<br /><span class="hide"> - </span><span class="text-success">' . _l('program_invoiced') . '</span>';
     }
 

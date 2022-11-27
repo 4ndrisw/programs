@@ -73,11 +73,27 @@ class Programs extends AdminController
             'clientid' => $clientid,
         ]));
     }
-    public function get_peralatan_table($clientid, $inspector_id, $inspector_staff_id, $surveyor_id, $id)
+
+    public function get_peralatan_table($clientid, $institution_id, $inspector_id, $inspector_staff_id, $surveyor_id, $id)
     {
         if ($this->input->is_ajax_request()) {
             $this->app->get_table_data(module_views_path('programs', 'admin/tables/peralatan_table'), [
                 'clientid' => $clientid,
+                'institution_id' => $institution_id,
+                'inspector_id' => $inspector_id,
+                'inspector_staff_id' => $inspector_staff_id,
+                'surveyor_id' => $surveyor_id,
+                'program_id' => $id,
+            ]);
+        }
+    }
+
+    public function get_program_items_table($clientid, $institution_id, $inspector_id, $inspector_staff_id, $surveyor_id, $id)
+    {
+        if ($this->input->is_ajax_request()) {
+            $this->app->get_table_data(module_views_path('programs', 'admin/tables/program_items_table'), [
+                'clientid' => $clientid,
+                'institution_id' => $institution_id,
                 'inspector_id' => $inspector_id,
                 'inspector_staff_id' => $inspector_staff_id,
                 'surveyor_id' => $surveyor_id,
@@ -102,6 +118,7 @@ class Programs extends AdminController
                 if (!has_permission('programs', '', 'create')) {
                     access_denied('programs');
                 }
+                $program_data['institution_id'] = get_institution_id_by_inspector_id($program_data['inspector_id']);
                 $id = $this->programs_model->add($program_data);
 
                 if ($id) {
@@ -257,9 +274,9 @@ class Programs extends AdminController
 
         $program->date       = _d($program->date);
         $program->duedate = _d($program->duedate);
-        if ($program->inspection_id !== null) {
-            $this->load->model('invoices_model');
-            $program->invoice = $this->invoices_model->get($program->inspection_id);
+        if (isset($program->inspection_id) && $program->inspection_id !== null) {
+            $this->load->model('inspections_model');
+            $program->inspection = $this->inspections_model->get($program->inspection_id);
         }
 
         if ($program->sent == 0) {
@@ -272,6 +289,7 @@ class Programs extends AdminController
 
         $data['activity']          = $this->programs_model->get_program_activity($id);
         $data['program']          = $program;
+        $data['inspection']          = $program->inspection;
         $data['members']           = $this->staff_model->get('', ['active' => 1]);
         $data['program_states'] = $this->programs_model->get_states();
         $data['totalNotes']        = total_rows(db_prefix() . 'notes', ['rel_id' => $id, 'rel_type' => 'program']);
@@ -419,15 +437,15 @@ class Programs extends AdminController
     /* Convert program to invoice */
     public function convert_to_inspection($id)
     {
-        if (!has_permission('invoices', '', 'create')) {
-            access_denied('invoices');
+        if (!has_permission('inspections', '', 'create')) {
+            access_denied('inspections');
         }
         if (!$id) {
             die('No program found');
         }
-        $draft_inspection = false;
+        $draft_invoice = false;
         if ($this->input->get('save_as_draft')) {
-            $draft_inspection = true;
+            $draft_invoice = true;
         }
         $inspection_id = $this->programs_model->convert_to_inspection($id, false, $draft_inspection);
         if ($inspection_id) {
@@ -648,7 +666,14 @@ class Programs extends AdminController
     public function add_program_item()
     {
         if ($this->input->post() && $this->input->is_ajax_request()) {
-            $this->programs_model->program_add_program_item($this->input->post());
+            $this->programs_model->programs_add_program_item($this->input->post());
+        }
+    }
+
+    public function remove_program_item()
+    {
+        if ($this->input->post() && $this->input->is_ajax_request()) {
+            $this->programs_model->programs_remove_program_item($this->input->post());
         }
     }
 
