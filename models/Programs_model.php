@@ -137,18 +137,20 @@ class Programs_model extends App_Model
         $new_inspection_data['government_id'] = $_program->government_id;
         $new_inspection_data['institution_id'] = $_program->institution_id;
         $new_inspection_data['inspector_id'] = $_program->inspector_id;
-        $new_inspection_data['inspector_id'] = $_program->inspector_staff_id;
+        $new_inspection_data['inspector_staff_id'] = $_program->inspector_staff_id;
+        $new_inspection_data['surveyor_id'] = $_program->surveyor_id;
+        $new_inspection_data['reference_no'] = $_program->reference_no;
         $new_inspection_data['number']     = get_option('next_inspection_number');
         $new_inspection_data['date']       = _d(date('Y-m-d'));
 
-        $new_inspection_data['show_quantity_as'] = $_program->show_quantity_as;
-        $new_inspection_data['currency']         = $_program->currency;
-        $new_inspection_data['subtotal']         = $_program->subtotal;
-        $new_inspection_data['total']            = $_program->total;
-        $new_inspection_data['adjustment']       = $_program->adjustment;
-        $new_inspection_data['discount_percent'] = $_program->discount_percent;
-        $new_inspection_data['discount_total']   = $_program->discount_total;
-        $new_inspection_data['discount_type']    = $_program->discount_type;
+        //$new_inspection_data['show_quantity_as'] = $_program->show_quantity_as;
+        //$new_inspection_data['currency']         = $_program->currency;
+        //$new_inspection_data['subtotal']         = $_program->subtotal;
+        //$new_inspection_data['total']            = $_program->total;
+        //$new_inspection_data['adjustment']       = $_program->adjustment;
+        //$new_inspection_data['discount_percent'] = $_program->discount_percent;
+        //$new_inspection_data['discount_total']   = $_program->discount_total;
+        //$new_inspection_data['discount_type']    = $_program->discount_type;
         // Since version 1.0.6
         $new_inspection_data['billing_street']   = clear_textarea_breaks($_program->billing_street);
         $new_inspection_data['billing_city']     = $_program->billing_city;
@@ -172,44 +174,6 @@ class Programs_model extends App_Model
         $new_inspection_data['state']    = 1;
         $new_inspection_data['adminnote'] = '';
 
-        $this->load->model('payment_modes_model');
-        $modes = $this->payment_modes_model->get('', [
-            'expenses_only !=' => 1,
-        ]);
-        $temp_modes = [];
-        foreach ($modes as $mode) {
-            if ($mode['selected_by_default'] == 0) {
-                continue;
-            }
-            $temp_modes[] = $mode['id'];
-        }
-        //$new_inspection_data['allowed_payment_modes'] = $temp_modes;
-        $new_inspection_data['newitems']              = [];
-        $custom_fields_items                       = get_custom_fields('items');
-        $key                                       = 1;
-        foreach ($_program->items as $item) {
-            $new_inspection_data['newitems'][$key]['description']      = $item['description'];
-            $new_inspection_data['newitems'][$key]['long_description'] = clear_textarea_breaks($item['long_description']);
-            $new_inspection_data['newitems'][$key]['qty']              = $item['qty'];
-            $new_inspection_data['newitems'][$key]['unit']             = $item['unit'];
-            $new_inspection_data['newitems'][$key]['taxname']          = [];
-            $taxes                                                  = get_program_item_taxes($item['id']);
-            foreach ($taxes as $tax) {
-                // tax name is in format TAX1|10.00
-                array_push($new_inspection_data['newitems'][$key]['taxname'], $tax['taxname']);
-            }
-            $new_inspection_data['newitems'][$key]['rate']  = $item['rate'];
-            $new_inspection_data['newitems'][$key]['order'] = $item['item_order'];
-            foreach ($custom_fields_items as $cf) {
-                $new_inspection_data['newitems'][$key]['custom_fields']['items'][$cf['id']] = get_custom_field_value($item['id'], $cf['id'], 'items', false);
-
-                if (!defined('COPY_CUSTOM_FIELDS_LIKE_HANDLE_POST')) {
-                    define('COPY_CUSTOM_FIELDS_LIKE_HANDLE_POST', true);
-                }
-            }
-            $key++;
-        }
-        
         include_once(FCPATH . 'modules/inspections/models/inspections_model.php');
 
         $this->load->model('inspections_model');
@@ -229,6 +193,8 @@ class Programs_model extends App_Model
             }
             // For all cases update addefrom and sale agent from the invoice
             // May happen staff is not logged in and these values to be 0
+
+            //$_program->items             = $this->get_client_program_items($_program->id);
             $this->db->where('id', $id);
             $this->db->update(db_prefix() . 'inspections', [
                 'addedfrom'  => $_program->addedfrom,
@@ -238,7 +204,7 @@ class Programs_model extends App_Model
 
             // For all cases update inspectionedfrom and sale agent from the invoice
             // May happen staff is not logged in and these values to be 0
-            $this->db->where('id', $_program->id);
+            $this->db->where('program_id', $_program->id);
             $this->db->update(db_prefix() . 'program_items', [
                 'inspectionedfrom'  => $_program->addedfrom,
                 'inspection_id' => $id,
@@ -321,20 +287,25 @@ class Programs_model extends App_Model
         $new_program_data['number']     = get_option('next_program_number');
         $new_program_data['date']       = _d(date('Y-m-d'));
         $new_program_data['duedate'] = null;
-
+        $new_program_data['government_id']        = $_program->government_id;
+        $new_program_data['institution_id']        = $_program->institution_id;
+        $new_program_data['inspector_id']        = $_program->inspector_id;
+        $new_program_data['inspector_staff_id']        = $_program->inspector_staff_id;
+        $new_program_data['surveyor_id']        = $_program->surveyor_id;
+        
         if ($_program->duedate && get_option('program_due_after') != 0) {
             $new_program_data['duedate'] = _d(date('Y-m-d', strtotime('+' . get_option('program_due_after') . ' DAY', strtotime(date('Y-m-d')))));
         }
 
         $new_program_data['show_quantity_as'] = $_program->show_quantity_as;
-        $new_program_data['currency']         = $_program->currency;
-        $new_program_data['subtotal']         = $_program->subtotal;
-        $new_program_data['total']            = $_program->total;
+        //$new_program_data['currency']         = $_program->currency;
+        //$new_program_data['subtotal']         = $_program->subtotal;
+        //$new_program_data['total']            = $_program->total;
         $new_program_data['adminnote']        = $_program->adminnote;
-        $new_program_data['adjustment']       = $_program->adjustment;
-        $new_program_data['discount_percent'] = $_program->discount_percent;
-        $new_program_data['discount_total']   = $_program->discount_total;
-        $new_program_data['discount_type']    = $_program->discount_type;
+        //$new_program_data['adjustment']       = $_program->adjustment;
+        //$new_program_data['discount_percent'] = $_program->discount_percent;
+        //$new_program_data['discount_total']   = $_program->discount_total;
+        //$new_program_data['discount_type']    = $_program->discount_type;
         $new_program_data['terms']            = $_program->terms;
         $new_program_data['inspector_staff_id']       = $_program->inspector_staff_id;
         $new_program_data['reference_no']     = $_program->reference_no;
@@ -357,50 +328,29 @@ class Programs_model extends App_Model
         $new_program_data['state']     = 1;
         $new_program_data['clientnote'] = $_program->clientnote;
         $new_program_data['adminnote']  = '';
-        $new_program_data['newitems']   = [];
-        $custom_fields_items             = get_custom_fields('items');
-        $key                             = 1;
-        foreach ($_program->items as $item) {
-            $new_program_data['newitems'][$key]['description']      = $item['description'];
-            $new_program_data['newitems'][$key]['long_description'] = clear_textarea_breaks($item['long_description']);
-            $new_program_data['newitems'][$key]['qty']              = $item['qty'];
-            $new_program_data['newitems'][$key]['unit']             = $item['unit'];
-            $new_program_data['newitems'][$key]['taxname']          = [];
-            $taxes                                                   = get_program_item_taxes($item['id']);
-            foreach ($taxes as $tax) {
-                // tax name is in format TAX1|10.00
-                array_push($new_program_data['newitems'][$key]['taxname'], $tax['taxname']);
-            }
-            $new_program_data['newitems'][$key]['rate']  = $item['rate'];
-            $new_program_data['newitems'][$key]['order'] = $item['item_order'];
-            foreach ($custom_fields_items as $cf) {
-                $new_program_data['newitems'][$key]['custom_fields']['items'][$cf['id']] = get_custom_field_value($item['id'], $cf['id'], 'items', false);
-
-                if (!defined('COPY_CUSTOM_FIELDS_LIKE_HANDLE_POST')) {
-                    define('COPY_CUSTOM_FIELDS_LIKE_HANDLE_POST', true);
-                }
-            }
-            $key++;
-        }
         $id = $this->add($new_program_data);
         if ($id) {
-            $custom_fields = get_custom_fields('program');
-            foreach ($custom_fields as $field) {
-                $value = get_custom_field_value($_program->id, $field['id'], 'program', false);
-                if ($value == '') {
-                    continue;
-                }
+            $_program->items             = $this->get_client_program_items($_program->id);
+            foreach ($_program->items as $item) {
+                $_program_item['government_id']      = $item['government_id'];
+                $_program_item['institution_id'] = $item['institution_id'];
+                $_program_item['inspector_id']              = $item['inspector_id'];
+                $_program_item['inspector_staff_id']             = $item['inspector_staff_id'];
+                $_program_item['surveyor_id']          = $item['inspector_staff_id'];
+                $_program_item['jenis_pesawat_id']          = $item['jenis_pesawat_id'];
+                $_program_item['jenis_pesawat']          = $item['jenis_pesawat'];
+                $_program_item['nomor_seri']          = $item['nomor_seri'];
+                $_program_item['nomor_unit']          = $item['nomor_unit'];
+                
+                $_program_item['peralatan_id']          = $item['peralatan_id'];
+                $_program_item['nama_pesawat']          = $item['nama_pesawat'];
+                $_program_item['kelompok_alat']          = $item['kelompok_alat'];
+                $_program_item['addedfrom']          = get_staff_user_id();
+                $_program_item['program_id']          = $id;
 
-                $this->db->insert(db_prefix() . 'customfieldsvalues', [
-                    'relid'   => $id,
-                    'fieldid' => $field['id'],
-                    'fieldto' => 'program',
-                    'value'   => $value,
-                ]);
+                //$this->db->where('program_id', $_program->id);
+                $this->db->insert( db_prefix(). 'program_items', $_program_item);
             }
-
-            $tags = get_tags_in($_program->id, 'program');
-            handle_tags_save($tags, $id, 'program');
 
             log_activity('Copied Program ' . format_program_number($_program->id));
 
@@ -498,24 +448,7 @@ class Programs_model extends App_Model
 
         $save_and_send = isset($data['save_and_send']);
 
-        $programRequestID = false;
-        if (isset($data['program_request_id'])) {
-            $programRequestID = $data['program_request_id'];
-            unset($data['program_request_id']);
-        }
-
-        if (isset($data['custom_fields'])) {
-            $custom_fields = $data['custom_fields'];
-            unset($data['custom_fields']);
-        }
-
         $data['hash'] = app_generate_hash();
-
-        $items = [];
-        if (isset($data['newitems'])) {
-            $items = $data['newitems'];
-            unset($data['newitems']);
-        }
 
         $data = $this->map_shipping_columns($data);
 
@@ -529,11 +462,9 @@ class Programs_model extends App_Model
 
         $hook = hooks()->apply_filters('before_program_added', [
             'data'  => $data,
-            'items' => $items,
         ]);
 
         $data  = $hook['data'];
-        $items = $hook['items'];
 
         $this->db->insert(db_prefix() . 'programs', $data);
         $insert_id = $this->db->insert_id();
@@ -544,28 +475,6 @@ class Programs_model extends App_Model
             $this->db->set('value', 'value+1', false);
             $this->db->update(db_prefix() . 'options');
 
-            if ($programRequestID !== false && $programRequestID != '') {
-                $this->load->model('program_request_model');
-                $completedStatus = $this->program_request_model->get_state_by_flag('completed');
-                $this->program_request_model->update_request_state([
-                    'requestid' => $programRequestID,
-                    'state'    => $completedStatus->id,
-                ]);
-            }
-
-            if (isset($custom_fields)) {
-                handle_custom_fields_post($insert_id, $custom_fields);
-            }
-
-            handle_tags_save($tags, $insert_id, 'program');
-
-            foreach ($items as $key => $item) {
-                if ($itemid = add_new_sales_item_post($item, $insert_id, 'program')) {
-                    _maybe_insert_post_item_tax($itemid, $item, $insert_id, 'program');
-                }
-            }
-
-            update_sales_total_tax_column($insert_id, 'program', db_prefix() . 'programs');
             $this->log_program_activity($insert_id, 'program_activity_created');
 
             hooks()->do_action('after_program_added', $insert_id);
@@ -590,6 +499,17 @@ class Programs_model extends App_Model
         $this->db->where('id', $id);
 
         return $this->db->get(db_prefix() . 'program_items')->row();
+    }
+
+    /**
+     * Get item by id
+     * @param mixed $id item id
+     * @return object
+     */
+    public function get_client_program_items($program_id)
+    {
+        $this->db->where('program_id', $program_id);
+        return $this->db->get(db_prefix() . 'program_items')->result_array();
     }
 
     /**

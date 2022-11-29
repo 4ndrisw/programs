@@ -478,14 +478,14 @@ class Programs extends AdminController
             if ($this->set_program_pipeline_autoload($new_id)) {
                 redirect($_SERVER['HTTP_REFERER']);
             } else {
-                redirect(admin_url('programs/program/' . $new_id));
+                redirect(admin_url('programs/list_programs/' . $new_id));
             }
         }
         set_alert('danger', _l('program_copied_fail'));
         if ($this->set_program_pipeline_autoload($id)) {
             redirect($_SERVER['HTTP_REFERER']);
         } else {
-            redirect(admin_url('programs/program/' . $id));
+            redirect(admin_url('programs/list_programs/' . $id));
         }
     }
 
