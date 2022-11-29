@@ -16,6 +16,9 @@ $sTable       = db_prefix().'program_items';
 $where        = [
     'AND clientid=' . $clientid,
     ];
+
+//array_push($where, 'AND '.db_prefix().'program_items.peralatan_id IS NULL');
+
 $join = [
 //    'JOIN '.db_prefix().'staff ON '.db_prefix().'staff.staffid = '.db_prefix().'reminders.staff',
     ];
@@ -25,6 +28,7 @@ $result = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, [
     'inspector_id',
     'inspector_staff_id',
     'surveyor_id',
+    'jenis_pesawat_id',
     'clientid',
     ]);
 $output  = $result['output'];
@@ -64,7 +68,7 @@ foreach ($rResult as $aRow) {
             $_data = _dt($_data);
         }
         elseif ($aColumns[$i] == '1') {
-            $_data = '<a class="btn btn-danger" title = "'._l('propose_this_item').'" href="#" onclick="programs_remove_program_item(' . $clientid . ','. $inspector_id . ','. $inspector_staff_id  . ','. $surveyor_id . ','. $program_id . ',' . $aRow['id'] . ',' . '); return false;">X</a>';
+            $_data = '<a class="btn btn-danger" title = "'._l('remove_this_item').'" href="#" onclick="programs_remove_program_item(' . $aRow['id'] . '); return false;">X</a>';
         }
         $row[] = $_data;
     }

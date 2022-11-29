@@ -138,7 +138,7 @@ class Programs_model extends App_Model
         $new_inspection_data['institution_id'] = $_program->institution_id;
         $new_inspection_data['inspector_id'] = $_program->inspector_id;
         $new_inspection_data['inspector_id'] = $_program->inspector_staff_id;
-        $new_inspection_data['number']     = get_option('next_invoice_number');
+        $new_inspection_data['number']     = get_option('next_inspection_number');
         $new_inspection_data['date']       = _d(date('Y-m-d'));
 
         $new_inspection_data['show_quantity_as'] = $_program->show_quantity_as;
@@ -234,6 +234,16 @@ class Programs_model extends App_Model
                 'addedfrom'  => $_program->addedfrom,
                 'inspector_staff_id' => $_program->inspector_staff_id,
             ]);
+
+
+            // For all cases update inspectionedfrom and sale agent from the invoice
+            // May happen staff is not logged in and these values to be 0
+            $this->db->where('id', $_program->id);
+            $this->db->update(db_prefix() . 'program_items', [
+                'inspectionedfrom'  => $_program->addedfrom,
+                'inspection_id' => $id,
+            ]);
+
 
             // Update program with the new invoice data and set to state accepted
             $this->db->where('id', $_program->id);
@@ -1411,7 +1421,6 @@ class Programs_model extends App_Model
 
     public function programs_add_program_item($data){
 
-        log_activity(json_encode($data));
         $peralatan = get_peralatan($data['peralatan_id']);
         $data['nama_pesawat'] = $peralatan->subject;
         $data['jenis_pesawat'] = $peralatan->jenis_pesawat;
@@ -1425,6 +1434,12 @@ class Programs_model extends App_Model
         $data['addedfrom'] = get_staff_user_id();
 
         $this->db->insert(db_prefix() . 'program_items', $data);
+    }
+
+    public function programs_remove_program_item($data){
+        $this->db->where('inspection_id', null);
+        $this->db->where('id', $data['id']);
+        $this->db->delete(db_prefix() . 'program_items', $data);
     }
 
 

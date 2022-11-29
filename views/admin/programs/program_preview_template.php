@@ -56,13 +56,14 @@
                                                                                        + <?php echo $program->id ;?>, undefined, undefined, undefined,[1,'asc']); return false;" aria-controls="tab_peralatan" role="tab" data-toggle="tab">
                      <?php echo _l('equipment'); ?>
                      <?php
-                        $total_reminders = total_rows(db_prefix().'peralatan',
+                        $total_peralatan = total_rows(db_prefix().'peralatan',
                           array(
-                           'clientid'=>$program->clientid
+                           'clientid'=> $program->clientid,
+                           'peralatan_id'=> NULL,
                            )
                           );
-                        if($total_reminders > 0){
-                          echo '<span class="badge">'.$total_reminders.'</span>';
+                        if($total_peralatan > 0){
+                          echo '<span class="badge">'.$total_peralatan.'</span>';
                         }
                         ?>
                      </a>

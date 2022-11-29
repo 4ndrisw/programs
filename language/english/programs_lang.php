@@ -34,7 +34,8 @@ $lang['program_note']                   = 'Note:';
 
 $lang['programs']                                = 'Programs';
 $lang['program']                                 = 'Program';
-$lang['program_lowercase']                       = 'programs';
+$lang['programs_lowercase']                       = 'programs';
+$lang['program_lowercase']                       = 'program';
 $lang['create_new_program']                      = 'Create New Program';
 $lang['view_program']                            = 'View program';
 $lang['preview_program']                            = 'Preview program';
@@ -184,7 +185,7 @@ $lang['kelompok_alat'] = 'Category';
 $lang['process'] = 'Process';
 $lang['program_item_plan'] = 'Program item planned';
 $lang['program_item_proposed'] = 'Program item proposed';
-$lang['program_item_submitted'] = 'Program item proposed';
+$lang['inspection_item_processed'] = 'Program item processed';
 $lang['propose_this_item'] = 'Propose this item';
 
 

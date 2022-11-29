@@ -4,8 +4,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 $aColumns = [
     'subject',
-    'nomor_seri',
-    'nomor_unit',
+    db_prefix().'peralatan.nomor_seri',
+    db_prefix().'peralatan.nomor_unit',
     'open_till',
     '1',
     ];
@@ -14,15 +14,20 @@ $sIndexColumn = 'id';
 $sTable       = db_prefix().'peralatan';
 
 $where        = [
-    'AND clientid=' . $clientid,
+    'AND '.db_prefix().'peralatan.clientid=' . $clientid,
     ];
+
+array_push($where, 'AND '.db_prefix().'program_items.peralatan_id IS NULL');
+
 $join = [
+    'LEFT JOIN '.db_prefix().'program_items ON '.db_prefix().'peralatan.id = '.db_prefix().'program_items.peralatan_id',
 //    'JOIN '.db_prefix().'staff ON '.db_prefix().'staff.staffid = '.db_prefix().'reminders.staff',
     ];
 $result = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, [
-    'id',
+    db_prefix().'peralatan.id',
     'lokasi',
-    'clientid',
+    db_prefix().'peralatan.clientid',
+    db_prefix().'peralatan.jenis_pesawat_id',
     ]);
 $output  = $result['output'];
 $rResult = $result['rResult'];
@@ -53,7 +58,7 @@ foreach ($rResult as $aRow) {
             $_data = _dt($_data);
         }
         elseif ($aColumns[$i] == '1') {
-            $_data = '<a class="btn btn-success" title = "'._l('propose_this_item').'" href="#" onclick="programs_add_program_item(' . $clientid . ','. $institution_id . ',' . $inspector_id . ','. $inspector_staff_id  . ','. $surveyor_id . ','. $program_id . ',' . $aRow['id'] . ',' . '); return false;">+</a>';
+            $_data = '<a class="btn btn-success" title = "'._l('propose_this_item').'" href="#" onclick="programs_add_program_item(' . $clientid . ','. $institution_id . ',' . $inspector_id . ','. $inspector_staff_id  . ','. $surveyor_id . ','. $program_id . ',' . $aRow['jenis_pesawat_id'] .','.$aRow['id'] .'); return false;">+</a>';
         }
         $row[] = $_data;
     }

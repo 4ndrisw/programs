@@ -176,6 +176,10 @@ $lang['program_not_found']                                 = 'Pekerjaan tidak di
 
 $lang['propose_this_item'] = 'Ajukankan alat ini';
 
+$lang['inspection_item_proposed'] = 'Inspection item proposed';
+$lang['inspection_item_processed'] = 'Inspection item processed';
+$lang['propose_this_item'] = 'Propose this item';
+
 /*
 
 
