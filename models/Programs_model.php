@@ -301,7 +301,7 @@ class Programs_model extends App_Model
         $new_program_data['adminnote']        = $_program->adminnote;
         $new_program_data['terms']            = $_program->terms;
         $new_program_data['inspector_staff_id']       = $_program->inspector_staff_id;
-        $new_program_data['reference_no']     = $_program->reference_no;
+        //$new_program_data['reference_no']     = $_program->reference_no;
         // Since version 1.0.6
         $new_program_data['billing_street']   = clear_textarea_breaks($_program->billing_street);
         $new_program_data['billing_city']     = $_program->billing_city;
@@ -324,6 +324,9 @@ class Programs_model extends App_Model
         
         $id = $this->add($new_program_data);
         if ($id) {
+            /*
+             * program items do not copied because it shouldbe add from customer order
+             *
             $_program_item = [];
             $_program->items             = $this->get_client_program_items($_program->id);
             foreach ($_program->items as $item) {
@@ -346,6 +349,7 @@ class Programs_model extends App_Model
 
                 $this->db->insert( db_prefix(). 'program_items', $_program_item);
             }
+            */
 
             log_activity('Copied Program ' . format_program_number($_program->id));
 

@@ -356,6 +356,32 @@ class Programs extends AdminController
         if (!has_permission('programs', '', 'edit')) {
             access_denied('programs');
         }
+        if($state = 2 || $state = 4){
+            $program = $this->programs_model->get($id);
+            
+            if($program->reference_no == NULL || $program->reference_no == '' ){
+                set_alert('danger', _l('program_state_changed_fail'));                
+                log_activity('error 1 reference_no is null or empty');
+            }
+            else{
+                $total_program_items = total_rows(db_prefix().'program_items',
+                  array(
+                   'program_id'=>$id,
+                  )
+                );
+
+                if($total_program_items < 1){
+                    set_alert('danger', _l('program_state_changed_fail'));
+                }
+                log_activity('error 2 there is no program_items');
+            }
+            if ($this->set_program_pipeline_autoload($id)) {
+                redirect($_SERVER['HTTP_REFERER']);
+            } else {
+                redirect(admin_url('programs/list_programs/' . $id));
+            }
+        }
+        
         $success = $this->programs_model->mark_action_state($state, $id);
         if ($success) {
             set_alert('success', _l('program_state_changed_success'));
@@ -467,6 +493,12 @@ class Programs extends AdminController
         if (!$id) {
             die('No program found');
         }
+        /*
+         *
+         * is can program with draft status copied ?
+         *
+         */
+
         $new_id = $this->programs_model->copy($id);
         if ($new_id) {
             set_alert('success', _l('program_copied_successfully'));
