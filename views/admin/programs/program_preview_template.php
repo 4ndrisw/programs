@@ -23,7 +23,7 @@
                                                                                        + <?php echo $program->inspector_staff_id ;?> + '/'
                                                                                        + <?php echo $program->surveyor_id ?> + '/'
                                                                                        + <?php echo $program->id ;?>, undefined, undefined, undefined,[1,'asc']); return false;" aria-controls="tab_program_items" role="tab" data-toggle="tab">
-                     <?php echo _l('program_items'); ?>
+                     <?php echo _l('program_items_tab'); ?>
                      <?php
                         $total_program_items = total_rows(db_prefix().'program_items',
                           array(
@@ -410,7 +410,7 @@
                
                <span class="label label-success mbot5 mtop5"><?php echo _l('program_item_proposed'); ?> </span>
                <hr />
-               <?php render_datatable(array( _l( 'program_items'), _l( 'serial_number'), _l( 'unit_number'), _l( 'kelompok_alat'), _l( 'process')), 'program_items'); ?>
+               <?php render_datatable(array( _l( 'program_items_table'), _l( 'serial_number'), _l( 'unit_number'), _l( 'kelompok_alat'), _l( 'process')), 'program_items'); ?>
             </div>
             <div role="tabpanel" class="tab-pane" id="tab_peralatan">
                <a href="#" class="btn btn-info btn-disable" data-target=".reminder-modal-program-<?php echo $program->id; ?>"><i class="fa fa-bell-o"></i> <?php echo _l('equipments_available'); ?></a>

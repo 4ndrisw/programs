@@ -298,14 +298,7 @@ class Programs_model extends App_Model
         }
 
         $new_program_data['show_quantity_as'] = $_program->show_quantity_as;
-        //$new_program_data['currency']         = $_program->currency;
-        //$new_program_data['subtotal']         = $_program->subtotal;
-        //$new_program_data['total']            = $_program->total;
         $new_program_data['adminnote']        = $_program->adminnote;
-        //$new_program_data['adjustment']       = $_program->adjustment;
-        //$new_program_data['discount_percent'] = $_program->discount_percent;
-        //$new_program_data['discount_total']   = $_program->discount_total;
-        //$new_program_data['discount_type']    = $_program->discount_type;
         $new_program_data['terms']            = $_program->terms;
         $new_program_data['inspector_staff_id']       = $_program->inspector_staff_id;
         $new_program_data['reference_no']     = $_program->reference_no;
@@ -328,27 +321,29 @@ class Programs_model extends App_Model
         $new_program_data['state']     = 1;
         $new_program_data['clientnote'] = $_program->clientnote;
         $new_program_data['adminnote']  = '';
+        
         $id = $this->add($new_program_data);
         if ($id) {
+            $_program_item = [];
             $_program->items             = $this->get_client_program_items($_program->id);
             foreach ($_program->items as $item) {
                 $_program_item['government_id']      = $item['government_id'];
-                $_program_item['institution_id'] = $item['institution_id'];
-                $_program_item['inspector_id']              = $item['inspector_id'];
-                $_program_item['inspector_staff_id']             = $item['inspector_staff_id'];
-                $_program_item['surveyor_id']          = $item['inspector_staff_id'];
-                $_program_item['jenis_pesawat_id']          = $item['jenis_pesawat_id'];
-                $_program_item['jenis_pesawat']          = $item['jenis_pesawat'];
-                $_program_item['nomor_seri']          = $item['nomor_seri'];
-                $_program_item['nomor_unit']          = $item['nomor_unit'];
+                $_program_item['institution_id']     = $item['institution_id'];
+                $_program_item['inspector_id']       = $item['inspector_id'];
+                $_program_item['inspector_staff_id'] = $item['inspector_staff_id'];
+                $_program_item['surveyor_id']        = $item['surveyor_id'];
+                $_program_item['clientid']           = $item['clientid'];
+                $_program_item['jenis_pesawat_id']   = $item['jenis_pesawat_id'];
+                $_program_item['jenis_pesawat']      = $item['jenis_pesawat'];
+                $_program_item['nomor_seri']         = $item['nomor_seri'];
+                $_program_item['nomor_unit']         = $item['nomor_unit'];
                 
-                $_program_item['peralatan_id']          = $item['peralatan_id'];
-                $_program_item['nama_pesawat']          = $item['nama_pesawat'];
-                $_program_item['kelompok_alat']          = $item['kelompok_alat'];
+                $_program_item['peralatan_id']       = $item['peralatan_id'];
+                $_program_item['nama_pesawat']       = $item['nama_pesawat'];
+                $_program_item['kelompok_alat']      = $item['kelompok_alat'];
                 $_program_item['addedfrom']          = get_staff_user_id();
-                $_program_item['program_id']          = $id;
+                $_program_item['program_id']         = $id;
 
-                //$this->db->where('program_id', $_program->id);
                 $this->db->insert( db_prefix(). 'program_items', $_program_item);
             }
 

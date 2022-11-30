@@ -2,7 +2,7 @@
 <div class="col-md-12">
   <div class="panel_s mbot10">
    <div class="panel-body _buttons">
-    <?php $this->load->view('admin/programs/programs_top_stats');
+    <?php //$this->load->view('admin/programs/programs_top_stats');
     ?>
     <?php if(has_permission('programs','','create')){ ?>
      <a href="<?php echo admin_url('programs/program'); ?>" class="btn btn-info pull-left new new-program-btn"><?php echo _l('create_new_program'); ?></a>

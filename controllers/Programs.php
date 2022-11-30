@@ -53,13 +53,8 @@ class Programs extends AdminController
             $data['bodyclass']             = 'programs-total-manual';
             $data['programs_years']       = $this->programs_model->get_programs_years();
             $data['programs_inspector_staff_ids'] = $this->programs_model->get_inspector_staff_ids();
-            if($id){
-                $this->load->view('admin/programs/manage_small_table', $data);
 
-            }else{
-                $this->load->view('admin/programs/manage_table', $data);
-
-            }
+            $this->load->view('admin/programs/manage_table', $data);
 
         }
     }

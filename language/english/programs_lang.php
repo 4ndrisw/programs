@@ -184,9 +184,15 @@ $lang['unit_number'] = 'Unit number';
 $lang['kelompok_alat'] = 'Category';
 $lang['process'] = 'Process';
 $lang['program_item_plan'] = 'Program item planned';
-$lang['program_item_proposed'] = 'Program item proposed';
+$lang['program_items_proposed'] = 'Program item proposed';
+//$lang['program_item_table'] = 'Program';
+
 $lang['inspection_item_processed'] = 'Program item processed';
 $lang['propose_this_item'] = 'Propose this item';
+$lang['program_items_table'] = 'Program';
+$lang['program_items_tab'] = 'Program item';
+$lang['program_item_proposed'] = 'Program item processed';
+
 
 
 
