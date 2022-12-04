@@ -6,7 +6,7 @@ if (!$CI->db->table_exists(db_prefix() . 'programs')) {
   `sent` tinyint(1) NOT NULL DEFAULT 0,
   `datesend` datetime DEFAULT NULL,
   `project_id` int(11) NOT NULL DEFAULT 0,
-  `goverment_id` int(11) NOT NULL DEFAULT 0,
+  `government_id` int(11) NOT NULL DEFAULT 0,
   `institution_id` int(11) NOT NULL DEFAULT 0,
   `inspector_id` int(11) NOT NULL DEFAULT 0,
   `inspector_staff_id` int(11) NOT NULL DEFAULT 0,
@@ -32,7 +32,7 @@ if (!$CI->db->table_exists(db_prefix() . 'programs')) {
   `signature` varchar(40) DEFAULT NULL,
   `short_link` varchar(100) DEFAULT NULL,
   `addedfrom` int(11) NOT NULL,
-  `state` int(11) NOT NULL DEFAULT 1,
+  `status` int(11) NOT NULL DEFAULT 1,
   `state` tinyint(1) NOT NULL DEFAULT 0,
   `clientnote` text DEFAULT NULL,
   `adminnote` text DEFAULT NULL,
@@ -47,6 +47,9 @@ if (!$CI->db->table_exists(db_prefix() . 'programs')) {
   `discount_type` varchar(30) DEFAULT NULL,
   `inspection_id` int(11) DEFAULT NULL,
   `inspection_date` datetime DEFAULT NULL,
+  `licence_id` int(11) DEFAULT NULL,
+  `licence_date` datetime DEFAULT NULL,
+  `licence_state` tinyint(1) DEFAULT NULL,
   `sale_agent` int(11) NOT NULL DEFAULT 0,
   `billing_street` varchar(200) DEFAULT NULL,
   `billing_city` varchar(100) DEFAULT NULL,
@@ -64,14 +67,19 @@ if (!$CI->db->table_exists(db_prefix() . 'programs')) {
     ) ENGINE=InnoDB DEFAULT CHARSET=" . $CI->db->char_set . ';');
 
     $CI->db->query('ALTER TABLE `' . db_prefix() . 'programs`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `goverment_id` (`goverment_id`,`institution_id`,`inspector_id`,`inspector_staff_id`,`surveyor_id`,`clientid`),
-  ADD KEY `surveyor_id` (`surveyor_id`),
-  ADD KEY `inspector_id` (`inspector_id`),
-  ADD KEY `inspector_staff_id` (`inspector_staff_id`),
-  ADD KEY `institution_id` (`institution_id`),
-  ADD KEY `state` (`state`),
-  ADD KEY `state` (`state`)
+        ADD PRIMARY KEY (`id`),
+        ADD KEY `goverment_id` (`government_id`,`institution_id`,`inspector_id`,`inspector_staff_id`,`surveyor_id`,`clientid`),
+        ADD KEY `surveyor_id` (`surveyor_id`),
+        ADD KEY `inspector_id` (`inspector_id`),
+        ADD KEY `inspector_staff_id` (`inspector_staff_id`),
+        ADD KEY `institution_id` (`institution_id`),
+        ADD KEY `status` (`status`),
+        ADD KEY `state` (`state`),
+        ADD KEY `duedate` (`duedate`),
+        ADD KEY `date` (`date`),
+        ADD KEY `licence_id` (`licence_id`),
+        ADD KEY `licence_date` (`licence_date`),
+        ADD KEY `licence_state` (`licence_state`)
       ;');
 
     $CI->db->query('ALTER TABLE `' . db_prefix() . 'programs`
