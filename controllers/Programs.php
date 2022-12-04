@@ -169,7 +169,7 @@ class Programs extends AdminController
         }
 
 
-        $data['staff']             = $this->staff_model->get('', ['active' => 1]);
+        $data['staff']             = $this->staff_model->get('', ['active' => 1, 'client_type'=>'inspector']);
         $data['program_states'] = $this->programs_model->get_states();
         $data['title']             = $title;
         $this->load->view('admin/programs/program', $data);
@@ -356,32 +356,6 @@ class Programs extends AdminController
         if (!has_permission('programs', '', 'edit')) {
             access_denied('programs');
         }
-        if($state = 2 || $state = 4){
-            $program = $this->programs_model->get($id);
-            
-            if($program->reference_no == NULL || $program->reference_no == '' ){
-                set_alert('danger', _l('program_state_changed_fail'));                
-                log_activity('error 1 reference_no is null or empty');
-            }
-            else{
-                $total_program_items = total_rows(db_prefix().'program_items',
-                  array(
-                   'program_id'=>$id,
-                  )
-                );
-
-                if($total_program_items < 1){
-                    set_alert('danger', _l('program_state_changed_fail'));
-                }
-                log_activity('error 2 there is no program_items');
-            }
-            if ($this->set_program_pipeline_autoload($id)) {
-                redirect($_SERVER['HTTP_REFERER']);
-            } else {
-                redirect(admin_url('programs/list_programs/' . $id));
-            }
-        }
-        
         $success = $this->programs_model->mark_action_state($state, $id);
         if ($success) {
             set_alert('success', _l('program_state_changed_success'));
@@ -394,7 +368,7 @@ class Programs extends AdminController
             redirect(admin_url('programs/list_programs/' . $id));
         }
     }
-
+    
     public function send_expiry_reminder($id)
     {
         $canView = user_can_view_program($id);
