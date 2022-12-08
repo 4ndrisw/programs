@@ -286,10 +286,7 @@
    <div class="row">
     <div class="col-md-12 mtop15">
       <div class="panel-body bottom-transaction">
-        <?php $value = (isset($program) ? $program->clientnote : get_option('predefined_clientnote_program')); ?>
-        <?php echo render_textarea('clientnote','program_add_edit_client_note',$value,array(),array(),'mtop15'); ?>
-        <?php $value = (isset($program) ? $program->terms : get_option('predefined_terms_program')); ?>
-        <?php echo render_textarea('terms','terms_and_conditions',$value,array(),array(),'mtop15'); ?>
+
         <div class="clearfix"></div>
         <div class="btn-bottom-toolbar text-right">
           <a class="btn btn-default" href="../"><?php echo _l('back') ;?><a>

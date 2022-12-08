@@ -798,3 +798,7 @@ function get_program_states()
 
     return $states;
 }
+
+function programs_after_user_data_widge_tabs_content($widgets=''){
+
+}

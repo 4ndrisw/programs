@@ -6,7 +6,6 @@ $aColumns = [
     'nama_pesawat',
     'nomor_seri',
     'nomor_unit',
-    'kelompok_alat',
     '1',
     ];
 
@@ -30,6 +29,7 @@ $result = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, [
     'surveyor_id',
     'jenis_pesawat_id',
     'clientid',
+    'addedfrom',
     ]);
 $output  = $result['output'];
 $rResult = $result['rResult'];
@@ -61,7 +61,14 @@ foreach ($rResult as $aRow) {
             $_data = _dt($_data);
         }
         elseif ($aColumns[$i] == '1') {
-            $_data = '<a class="btn btn-danger" title = "'._l('remove_this_item').'" href="#" onclick="programs_remove_program_item(' . $aRow['id'] . '); return false;">X</a>';
+            $current_user = get_client_type(get_staff_user_id());
+            if((get_staff_user_id() == $aRow['addedfrom']
+                || $current_user->client_id == $aRow['clientid']
+                ) && (!in_array($state, [2]))){
+                $_data = '<a class="btn btn-danger" title = "'._l('remove_this_item').'" href="#" onclick="programs_remove_program_item(' . $aRow['id'] . '); return false;">X</a>';
+            }else{
+                $_data = '';
+            }
         }
         $row[] = $_data;
     }

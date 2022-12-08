@@ -1370,7 +1370,7 @@ class Programs_model extends App_Model
      *
      * @return array
      */
-    public function get_client_programs($client = null)
+    public function get_client_programs($staffid = null)
     {
         /*
         if ($staffId && ! staff_can('view', 'programs', $staffId)) {
@@ -1378,16 +1378,122 @@ class Programs_model extends App_Model
         }
         */
 
-        $this->db->select(db_prefix() . 'programs.id,' . db_prefix() . 'programs.number,' . db_prefix() . 'programs.state,' . db_prefix() . 'clients.userid,' . db_prefix() . 'programs.hash,' . db_prefix() . 'projects.name,' . db_prefix() . 'programs.date');
+        $current_user = get_client_type($staffid);
+        switch ($current_user->client_type) {
+            case 'institution':
+                $current_user->institution_id = $current_user->client_id;
+                $current_user->inspector_id = FALSE;
+                $current_user->inspector_staff_id = FALSE;
+                $current_user->surveyor_id = FALSE;
+                $current_user->clientid = FALSE;
+                break;
+            case 'inspector':
+                $current_user->institution_id = FALSE;
+                $current_user->inspector_id = $current_user->client_id;
+                $current_user->inspector_staff_id = $staffid;
+                $current_user->surveyor_id = FALSE;
+                $current_user->clientid = FALSE;
+                break;
+            case 'surveyor':
+                $current_user->institution_id = FALSE;
+                $current_user->inspector_id = FALSE;
+                $current_user->inspector_staff_id = FALSE;
+                $current_user->surveyor_id = $current_user->client_id;
+                $current_user->clientid = FALSE;
+                break;
+            case 'company':
+                $current_user->institution_id = FALSE;
+                $current_user->inspector_id = FALSE;
+                $current_user->inspector_staff_id = FALSE;
+                $current_user->surveyorid = FALSE;
+                $current_user->clientid = $current_user->client_id;
+                break;
+            
+            default:
+                // code...
+                break;
+        }
+        
+        log_activity(json_encode($current_user));
+
+        $this->db->select(db_prefix() . 'programs.id,' .db_prefix() . 'programs.clientid,' . db_prefix() . 'programs.number,' . db_prefix() . 'programs.reference_no,' . db_prefix() . 'programs.state,' . db_prefix() . 'programs.hash,' . db_prefix() . 'programs.date,' . db_prefix() . 'clients.company');
         $this->db->join(db_prefix() . 'clients', db_prefix() . 'clients.userid = ' . db_prefix() . 'programs.clientid', 'left');
-        $this->db->join(db_prefix() . 'projects', db_prefix() . 'projects.id = ' . db_prefix() . 'programs.project_id', 'left');
+        //$this->db->join(db_prefix() . 'projects', db_prefix() . 'projects.id = ' . db_prefix() . 'programs.project_id', 'left');
         $this->db->where('date IS NOT NULL');
         $this->db->where(db_prefix() . 'programs.state > ',1);
-        $this->db->where(db_prefix() . 'programs.clientid =', $client->userid);
+        
+        if(is_admin()){
+            $this->db->where(db_prefix() . 'programs.clientid IS NOT NULL');
+        }else{
+            if($current_user->client_type =='institution'){
+                $this->db->where(db_prefix() . 'programs.institution_id =', $current_user->client_id);
+            }elseif($current_user->client_type =='inspector'){
+               $this->db->where(db_prefix() . 'programs.inspector_id =', $current_user->client_id);
+               if(get_option('inspector_staff_only_view_programs_assigned') == 1){
+                   $this->db->where(db_prefix() . 'programs.inspector_staff_id =', get_staff_user_id());
+               }
+
+            }elseif($current_user->client_type =='surveyor'){
+               $this->db->where(db_prefix() . 'programs.surveyor_id =', $current_user->client_id);
+            }else{
+                $this->db->where(db_prefix() . 'programs.clientid =', $current_user->client_id);
+            }
+        }
         
         return $this->db->get(db_prefix() . 'programs')->result_array();
 
     }
 
+
+    /**
+     * Get the programs for the client given
+     *
+     * @param  integer|null $staffId
+     * @param  integer $days
+     *
+     * @return array
+     */
+    public function get_client_type($client = null)
+    {
+        /*
+        if ($staffId && ! staff_can('view', 'programs', $staffId)) {
+            $this->db->where('addedfrom', $staffId);
+        }
+        */
+        //if(!is_admin()){
+            //$staffid = get_staff_client_id();
+            $staffid = '29';
+            $clients = get_staff_identity($staffid); 
+            log_activity(json_encode($clients[0]->client_type));
+        //}
+
+        $this->db->select(db_prefix() . 'programs.id,' . db_prefix() . 'programs.number,' . db_prefix() . 'programs.state,' . db_prefix() . 'programs.institution_id,' . db_prefix() . 'programs.inspector_id,'. db_prefix() . 'programs.inspector_staff_id,'. db_prefix() . 'programs.surveyor_id,' . db_prefix() . 'programs.hash,' . db_prefix() . 'programs.date');
+//        $this->db->join(db_prefix() . 'clients', db_prefix() . 'clients.userid = ' . db_prefix() . 'programs.clientid', 'left');
+        $this->db->where('date IS NOT NULL');
+        $this->db->where(db_prefix() . 'programs.state > ',1);
+
+        $client_id = $clients[0]->client_id;
+        
+        switch ($clients[0]->client_type){
+            case 'institution':
+                $this->db->where(db_prefix() . 'programs.institution_id =', $client_id);
+                break;
+            case 'inspector':
+                $this->db->where(db_prefix() . 'programs.inspector_id =', $client_id);
+                break;
+            case 'surveyor':
+                $this->db->where(db_prefix() . 'programs.surveyor_id =', $client_id);
+                break;
+            case 'company':
+                $this->db->where(db_prefix() . 'programs.client_id =', $client_id);
+                break;
+            default:
+                // code...
+                break;
+        }
+
+        return $this->db->get(db_prefix() . 'programs')->result();
+
+    }
 
 }

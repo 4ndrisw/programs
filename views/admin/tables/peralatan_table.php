@@ -26,6 +26,7 @@ $join = [
 $result = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, [
     db_prefix().'peralatan.id',
     'lokasi',
+    db_prefix().'peralatan.addedfrom',
     db_prefix().'peralatan.clientid',
     db_prefix().'peralatan.jenis_pesawat_id',
     ]);
@@ -58,7 +59,14 @@ foreach ($rResult as $aRow) {
             $_data = _dt($_data);
         }
         elseif ($aColumns[$i] == '1') {
-            $_data = '<a class="btn btn-success" title = "'._l('propose_this_item').'" href="#" onclick="programs_add_program_item(' . $clientid . ','. $institution_id . ',' . $inspector_id . ','. $inspector_staff_id  . ','. $surveyor_id . ','. $program_id . ',' . $aRow['jenis_pesawat_id'] .','.$aRow['id'] .'); return false;">+</a>';
+            $current_user = get_client_type(get_staff_user_id());
+            if((get_staff_user_id() == $aRow['addedfrom']
+                || $current_user->client_id == $aRow['clientid']
+                ) && (!in_array($state, [2]))){
+                $_data = '<a class="btn btn-success" title = "'._l('propose_this_item').'" href="#" onclick="programs_add_program_item(' . $clientid . ','. $institution_id . ',' . $inspector_id . ','. $inspector_staff_id  . ','. $surveyor_id . ','. $program_id . ',' . $aRow['jenis_pesawat_id'] .','.$aRow['id'] .'); return false;">+</a>';
+            }else{
+                $_data = '';
+            }
         }
         $row[] = $_data;
     }

@@ -2,7 +2,8 @@
 <?php
     $CI = &get_instance();
     $CI->load->model('programs/programs_model');
-    $programs = $CI->programs_model->get_programs_this_week(get_staff_user_id());
+    $staffid = get_staff_user_id();
+    $programs = $CI->programs_model->get_client_programs($staffid);
 
 ?>
 
@@ -28,13 +29,13 @@
                             <?php foreach ($programs as $program) { ?>
                                 <tr class="<?= 'program_state_' . $program['state']?>">
                                     <td>
-                                        <?php echo '<a href="' . admin_url("programs/program/" . $program["id"]) . '">' . format_program_number($program["id"]) . '</a>'; ?>
+                                        <?php echo '<a href="' . admin_url("programs/list_programs/" . $program["id"]) . '">' . format_program_number($program["id"]) . '</a>'; ?>
                                     </td>
                                     <td>
-                                        <?php echo '<a href="' . admin_url("clients/client/" . $program["userid"]) . '">' . $program["company"] . '</a>'; ?>
+                                        <?php echo '<a href="' . admin_url("companies/list_companies/" . $program["clientid"]) . '">' . $program["company"] . '</a>'; ?>
                                     </td>
                                     <td>
-                                        <?php echo '<a href="' . admin_url("projects/view/" . $program["projects_id"]) . '">' . $program['name'] . '</a>'; ?>
+                                        <?php echo $program['reference_no']; ?>
                                     </td>
                                     <td>
                                         <?php echo _d($program['date']); ?>

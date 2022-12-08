@@ -30,15 +30,12 @@ hooks()->add_filter('global_search_result_output', 'programs_global_search_resul
 hooks()->add_filter('get_dashboard_widgets', 'programs_add_dashboard_widget');
 hooks()->add_filter('module_programs_action_links', 'module_programs_action_links');
 
+//hooks()->add_action('after_user_data_widge_tabs_content', 'programs_after_user_data_widge_tabs_content');
 
 function programs_add_dashboard_widget($widgets)
 {
     $widgets[] = [
         'path'      => 'programs/widgets/program_this_week',
-        'container' => 'left-8',
-    ];
-    $widgets[] = [
-        'path'      => 'programs/widgets/project_not_programd',
         'container' => 'left-8',
     ];
 
@@ -225,7 +222,13 @@ function programs_settings_tab()
 }
 
 $CI = &get_instance();
+
 $CI->load->helper(PROGRAMS_MODULE_NAME . '/programs');
+// Check if customers theme is enabled
+if ($CI->uri->segment(1)=='admin' && $CI->uri->segment(2)=='') {
+    hooks()->add_action('app_customers_footer', 'program_dashboard__footer_js__component');
+}
+
 if(($CI->uri->segment(1)=='admin' && $CI->uri->segment(2)=='programs') || $CI->uri->segment(1)=='programs'){
     $CI->app_css->add(PROGRAMS_MODULE_NAME.'-css', base_url('modules/'.PROGRAMS_MODULE_NAME.'/assets/css/'.PROGRAMS_MODULE_NAME.'.css'));
     $CI->app_scripts->add(PROGRAMS_MODULE_NAME.'-js', base_url('modules/'.PROGRAMS_MODULE_NAME.'/assets/js/'.PROGRAMS_MODULE_NAME.'.js'));
@@ -237,6 +240,7 @@ if ($CI->uri->segment(1)=='programs') {
     hooks()->add_action('app_customers_footer', 'program_client__footer_js__component');
 }
 
+
 /**
  * Theme clients footer includes
  * @return stylesheet
@@ -245,6 +249,16 @@ function program_client_head_includes()
 {
     echo '<link href="' . module_dir_url('programs', 'assets/css/clients.css') . '"  rel="stylesheet" type="text/css" >';
 }
+
+/**
+ * Injects customers theme js components in footer
+ * @return null
+ */
+function program_dashboard__footer_js__component()
+{
+    echo '<script src="' . module_dir_url('programs', 'assets/js/dashboards.js') . '"></script>';
+}
+
 
 /**
  * Injects customers theme js components in footer

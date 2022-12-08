@@ -5,11 +5,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 $project_id = $this->ci->input->post('project_id');
 $staff_id = get_staff_user_id();
 
-$current_user = get_client_type($staff_id);
-$company_id = $current_user->client_id;
-
-log_activity('client_type ' . $current_user->client_type);
-
 $aColumns = [
     db_prefix() . 'programs.number',
     get_sql_select_client_company(),
@@ -31,15 +26,6 @@ $join = [
 
 $sIndexColumn = 'id';
 $sTable       = db_prefix() . 'programs';
-
-$custom_fields = get_table_custom_fields('program');
-
-foreach ($custom_fields as $key => $field) {
-    $selectAs = (is_cf_date($field) ? 'date_picker_cvalue_' . $key : 'cvalue_' . $key);
-    array_push($customFieldsColumns, $selectAs);
-    array_push($aColumns, 'ctable_' . $key . '.value as ' . $selectAs);
-    array_push($join, 'LEFT JOIN ' . db_prefix() . 'customfieldsvalues as ctable_' . $key . ' ON ' . db_prefix() . 'programs.id = ctable_' . $key . '.relid AND ctable_' . $key . '.fieldto="' . $field['fieldto'] . '" AND ctable_' . $key . '.fieldid=' . $field['id']);
-}
 
 $where  = [];
 $filter = [];
@@ -91,10 +77,8 @@ if (count($filter) > 0) {
     array_push($where, 'AND (' . prepare_dt_filter($filter) . ')');
 }
 
-if (isset($company_id) && $company_id != '') {
-   if(strtolower($current_user->client_type) == 'company'){
-     array_push($where, 'AND ' . db_prefix() . 'programs.clientid=' . $this->ci->db->escape_str($company_id));
-   } 
+if (isset($clientid) && $clientid != '') {
+    array_push($where, 'AND ' . db_prefix() . 'programs.clientid=' . $this->ci->db->escape_str($clientid));
 }
 
 if ($project_id) {
@@ -154,14 +138,14 @@ foreach ($rResult as $aRow) {
     $numberOutput = '';
     // If is from client area table or projects area request
     if ((isset($clientid) && is_numeric($clientid)) || $project_id) {
-        $numberOutput = '<a href="' . admin_url('programs/list_programs/' . $aRow['id']) . '">' . format_program_number($aRow['id']) . '</a>';
+        $numberOutput = '<a href="' . admin_url('programs/list_programs/' . $aRow['id']) . '" target="_blank">' . format_program_number($aRow['id']) . '</a>';
     } else {
         $numberOutput = '<a href="' . admin_url('programs/list_programs/#' . $aRow['id'] .'/'.$aRow['id']) . '" onclick="init_program(' . $aRow['id'] . '); return false;">' . format_program_number($aRow['id']) . '</a>';
     }
 
     $numberOutput .= '<div class="row-options">';
 
-    //$numberOutput .= '<a href="' . site_url('program/' . $aRow['id'] . '/' . $aRow['hash']) . '" target="_blank">' . _l('view') . '</a>';
+    $numberOutput .= '<a href="' . site_url('program/' . $aRow['id'] . '/' . $aRow['hash']) . '" target="_blank">' . _l('view') . '</a>';
     if (has_permission('programs', '', 'edit')) {
         $numberOutput .= ' | <a href="' . admin_url('programs/program/' . $aRow['id']) . '">' . _l('edit') . '</a>';
     }

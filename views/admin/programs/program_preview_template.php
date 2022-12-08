@@ -21,7 +21,8 @@
                                                                                        + <?php echo $program->institution_id ;?> + '/'
                                                                                        + <?php echo $program->inspector_id ;?> + '/'
                                                                                        + <?php echo $program->inspector_staff_id ;?> + '/'
-                                                                                       + <?php echo $program->surveyor_id ?> + '/'
+                                                                                       + <?php echo $program->surveyor_id ;?> + '/'
+                                                                                       + <?php echo $program->state ?> + '/'
                                                                                        + <?php echo $program->id ;?>, undefined, undefined, undefined,[1,'asc']); return false;" aria-controls="tab_program_items" role="tab" data-toggle="tab">
                      <?php echo _l('program_items_tab'); ?>
                      <?php
@@ -53,6 +54,7 @@
                                                                                        + <?php echo $program->inspector_id ;?> + '/'
                                                                                        + <?php echo $program->inspector_staff_id ;?> + '/'
                                                                                        + <?php echo $program->surveyor_id ?> + '/'
+                                                                                       + <?php echo $program->state ?> + '/'
                                                                                        + <?php echo $program->id ;?>, undefined, undefined, undefined,[1,'asc']); return false;" aria-controls="tab_peralatan" role="tab" data-toggle="tab">
                      <?php echo _l('equipment'); ?>
                      <?php
@@ -294,11 +296,15 @@
                                 echo '<i class="fa fa-tag" aria-hidden="true" data-toggle="tooltip" data-title="'.html_escape(implode(', ',$tags)).'"></i>';
                               }
                               ?>
-                           <a href="<?php echo admin_url('programs/program/'.$program->id); ?>">
-                           <span id="program-number">
-                           <?php echo format_program_number($program->id); ?>
-                           </span>
-                           </a>
+                           <?php if(staff_can('delete', 'programs')){ ?>
+                              <a href="<?php echo admin_url('programs/program/'.$program->id); ?>">
+                              <span id="program-number">
+                                 <?php } ?>
+                                    <?php echo format_program_number($program->id); ?>
+                                 <?php if(staff_can('delete', 'programs')){ ?>
+                              </span>
+                              </a>
+                           <?php } ?>
                         </h4>
                         <address>
                            <?php echo format_organization_info(); ?>
@@ -360,8 +366,8 @@
                      <div class="col-md-12">
                         <div class="table-responsive">
                               <?php
-                                 $items = get_preview_table_data($program, 'program', 'html', true);
-                                 echo $items->table();
+                                 //$items = get_preview_table_data($program, 'program', 'html', true);
+                                 //echo $items->table();
                               ?>
                         </div>
                      </div>
@@ -410,7 +416,7 @@
                
                <span class="label label-success mbot5 mtop5"><?php echo _l('program_item_proposed'); ?> </span>
                <hr />
-               <?php render_datatable(array( _l( 'program_items_table'), _l( 'serial_number'), _l( 'unit_number'), _l( 'kelompok_alat'), _l( 'process')), 'program_items'); ?>
+               <?php render_datatable(array( _l( 'program_items_table'), _l( 'serial_number'), _l( 'unit_number'), _l( 'process')), 'program_items'); ?>
             </div>
             <div role="tabpanel" class="tab-pane" id="tab_peralatan">
                <a href="#" class="btn btn-info btn-disable" data-target=".reminder-modal-program-<?php echo $program->id; ?>"><i class="fa fa-bell-o"></i> <?php echo _l('equipments_available'); ?></a>

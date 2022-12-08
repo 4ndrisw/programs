@@ -179,7 +179,7 @@ $lang['propose_this_item'] = 'Ajukankan alat ini';
 $lang['inspection_item_proposed'] = 'Inspection item proposed';
 $lang['inspection_item_processed'] = 'Inspection item processed';
 $lang['propose_this_item'] = 'Propose this item';
-$lang['related_to_program']         = 'This %s is terkait dengan %s: %s';
+$lang['related_to_program']         = '%s ini terkait dengan %s: %s';
 
 /*
 

@@ -69,7 +69,7 @@ class Programs extends AdminController
         ]));
     }
 
-    public function get_peralatan_table($clientid, $institution_id, $inspector_id, $inspector_staff_id, $surveyor_id, $id)
+    public function get_peralatan_table($clientid, $institution_id, $inspector_id, $inspector_staff_id, $surveyor_id, $state, $id)
     {
         if ($this->input->is_ajax_request()) {
             $this->app->get_table_data(module_views_path('programs', 'admin/tables/peralatan_table'), [
@@ -78,12 +78,13 @@ class Programs extends AdminController
                 'inspector_id' => $inspector_id,
                 'inspector_staff_id' => $inspector_staff_id,
                 'surveyor_id' => $surveyor_id,
+                'state' => $state,
                 'program_id' => $id,
             ]);
         }
     }
 
-    public function get_program_items_table($clientid, $institution_id, $inspector_id, $inspector_staff_id, $surveyor_id, $id)
+    public function get_program_items_table($clientid, $institution_id, $inspector_id, $inspector_staff_id, $surveyor_id, $state, $id)
     {
         if ($this->input->is_ajax_request()) {
             $this->app->get_table_data(module_views_path('programs', 'admin/tables/program_items_table'), [
@@ -92,7 +93,22 @@ class Programs extends AdminController
                 'inspector_id' => $inspector_id,
                 'inspector_staff_id' => $inspector_staff_id,
                 'surveyor_id' => $surveyor_id,
+                'state' => $state,
                 'program_id' => $id,
+            ]);
+        }
+    }
+
+
+    public function get_programs_this_week($clientid, $institution_id, $inspector_id, $inspector_staff_id, $surveyor_id)
+    {
+        if ($this->input->is_ajax_request()) {
+            $this->app->get_table_data(module_views_path('programs', 'admin/tables/programs_this_week'), [
+                'clientid' => $clientid,
+                'institution_id' => $institution_id,
+                'inspector_id' => $inspector_id,
+                'inspector_staff_id' => $inspector_staff_id,
+                'surveyor_id' => $surveyor_id,
             ]);
         }
     }
@@ -152,6 +168,11 @@ class Programs extends AdminController
             $program = $this->programs_model->get($id);
 
             if (!$program || !user_can_view_program($id)) {
+                blank_page(_l('program_not_found'));
+            }
+            
+            $check = is_staff_related_to_company($program->clientid);
+            if (!is_admin() && !$check) {                
                 blank_page(_l('program_not_found'));
             }
 
@@ -246,10 +267,15 @@ class Programs extends AdminController
     /* Get all program data used when user click on program number in a datatable left side*/
     public function get_program_data_ajax($id, $to_return = false)
     {
-        if (!has_permission('programs', '', 'view') && !has_permission('programs', '', 'view_own') && get_option('allow_staff_view_programs_assigned') == '0') {
+        $current_user = get_client_type(get_staff_user_id());
+
+        if (!has_permission('programs', '', 'view') 
+            && !has_permission('programs', '', 'view_own') 
+            && get_option('allow_staff_view_programs_assigned') == '0') {
             echo _l('access_denied');
             die;
         }
+
 
         if (!$id) {
             die('No program found');
@@ -266,6 +292,13 @@ class Programs extends AdminController
             echo _l('program_not_found');
             die;
         }
+
+        if(strtolower($current_user->client_type) == 'company'
+           && !is_staff_related_to_company($program->clientid) ){
+            echo _l('access_denied');
+            die;
+        }
+
 
         $program->date       = _d($program->date);
         $program->duedate = _d($program->duedate);
