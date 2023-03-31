@@ -4,18 +4,15 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 $project_id = $this->ci->input->post('project_id');
 $staff_id = get_staff_user_id();
-
 $current_user = get_client_type($staff_id);
 $company_id = $current_user->client_id;
-
-log_activity('client_type ' . $current_user->client_type);
 
 $aColumns = [
     db_prefix() . 'programs.number',
     get_sql_select_client_company(),
     'surveyor_id',
     'YEAR(date) as year',
-    'inspector_id',
+    db_prefix() . 'programs.inspector_id',
     db_prefix() . 'programs.inspector_staff_id as inspector_staff',
     'date',
     'duedate',
@@ -26,12 +23,13 @@ $aColumns = [
 $join = [
     'LEFT JOIN ' . db_prefix() . 'clients ON ' . db_prefix() . 'clients.userid = ' . db_prefix() . 'programs.clientid',
 //    'LEFT JOIN ' . db_prefix() . 'currencies ON ' . db_prefix() . 'currencies.id = ' . db_prefix() . 'programs.currency',
-    'LEFT JOIN ' . db_prefix() . 'projects ON ' . db_prefix() . 'projects.id = ' . db_prefix() . 'programs.project_id',
+//    'LEFT JOIN ' . db_prefix() . 'projects ON ' . db_prefix() . 'projects.id = ' . db_prefix() . 'programs.project_id',
 ];
 
 $sIndexColumn = 'id';
 $sTable       = db_prefix() . 'programs';
 
+/*
 $custom_fields = get_table_custom_fields('program');
 
 foreach ($custom_fields as $key => $field) {
@@ -40,6 +38,7 @@ foreach ($custom_fields as $key => $field) {
     array_push($aColumns, 'ctable_' . $key . '.value as ' . $selectAs);
     array_push($join, 'LEFT JOIN ' . db_prefix() . 'customfieldsvalues as ctable_' . $key . ' ON ' . db_prefix() . 'programs.id = ctable_' . $key . '.relid AND ctable_' . $key . '.fieldto="' . $field['fieldto'] . '" AND ctable_' . $key . '.fieldid=' . $field['id']);
 }
+*/
 
 $where  = [];
 $filter = [];
@@ -67,14 +66,17 @@ if (count($stateIds) > 0) {
 
 $agents    = $this->ci->programs_model->get_inspector_staff_ids();
 $agentsIds = [];
+/*
 foreach ($agents as $agent) {
     if ($this->ci->input->post('inspector_staff_id_' . $agent['inspector_staff_id'])) {
         array_push($agentsIds, $agent['inspector_staff_id']);
     }
 }
+
 if (count($agentsIds) > 0) {
     array_push($filter, 'AND inspector_staff_id IN (' . implode(', ', $agentsIds) . ')');
 }
+*/
 
 $years      = $this->ci->programs_model->get_programs_years();
 $yearsArray = [];
@@ -90,32 +92,28 @@ if (count($yearsArray) > 0) {
 if (count($filter) > 0) {
     array_push($where, 'AND (' . prepare_dt_filter($filter) . ')');
 }
-
+/*
 if (isset($company_id) && $company_id != '') {
-   if(strtolower($current_user->client_type) == 'company'){
+   if($current_user->client_type == 'Company'){
      array_push($where, 'AND ' . db_prefix() . 'programs.clientid=' . $this->ci->db->escape_str($company_id));
    } 
 }
-
+*/
+/*
 if ($project_id) {
     array_push($where, 'AND project_id=' . $this->ci->db->escape_str($project_id));
 }
+*/
 
 if (!has_permission('programs', '', 'view')) {
     $userWhere = 'AND ' . get_programs_where_sql_for_staff($staff_id);
     array_push($where, $userWhere);
 }
 
-if(is_inspector_staff($staff_id)){
+
+if (!is_admin() && has_permission('programs', '', 'view_programs_in_inpectors')){
     $inspector_id = get_inspector_id_by_staff_id($staff_id);
-    $userWhere = 'AND inspector_id = ' . $this->ci->db->escape_str($inspector_id);
-    array_push($where, $userWhere);
-
-}
-
-if(get_option('inspector_staff_only_view_programs_assigned') && is_inspector_staff($staff_id)){
-    $userWhere = 'AND '. db_prefix().'programs.inspector_staff_id'.' = ' . $this->ci->db->escape_str($staff_id);
-    array_push($where, $userWhere);
+    array_push($where, 'AND ' . db_prefix() . 'programs.inspector_id =' . $this->ci->db->escape_str($inspector_id));
 }
 
 if(is_surveyor_staff($staff_id)){
@@ -125,12 +123,16 @@ if(is_surveyor_staff($staff_id)){
 
 }
 
-$aColumns = hooks()->apply_filters('programs_table_sql_columns', $aColumns);
-
-// Fix for big queries. Some hosting have max_join_limit
-if (count($custom_fields) > 4) {
-    @$this->ci->db->query('SET SQL_BIG_SELECTS=1');
+if (!is_admin() && has_permission('programs', '', 'view_programs_in_institutions')){
+    $institution_id = get_institution_id_by_staff_id($staff_id);
+    array_push($where, 'AND ' . db_prefix() . 'programs.institution_id =' . $this->ci->db->escape_str($institution_id));
 }
+
+if(!is_admin() && is_staff_related_to_company($company_id)){
+    array_push($where, 'AND ('.db_prefix().'programs.clientid = '. $company_id . ') ');    
+}
+
+$aColumns = hooks()->apply_filters('programs_table_sql_columns', $aColumns);
 
 $result = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, [
     db_prefix() . 'programs.id',

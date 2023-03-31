@@ -116,6 +116,16 @@ class Programs extends AdminController
     /* Add new program or update existing */
     public function program($id = '')
     {
+
+        $staff_id = get_staff_user_id();
+        $current_user = get_client_type($staff_id);
+        $company_id = $current_user->client_id;
+        $client = get_client($company_id);
+
+        if(is_null($client->institution_id) || is_null($client->inspector_id) || is_null($client->inspector_staff_id)){
+            access_denied('programs');
+        }
+
         if ($this->input->post()) {
             $program_data = $this->input->post();
 
@@ -129,7 +139,27 @@ class Programs extends AdminController
                 if (!has_permission('programs', '', 'create')) {
                     access_denied('programs');
                 }
-                $program_data['institution_id'] = get_institution_id_by_inspector_id($program_data['inspector_id']);
+                
+                //$program_data['institution_id'] = get_institution_id_by_inspector_id($program_data['inspector_id']);
+                $program_data['clientid'] = $client->userid;                
+                $program_data['institution_id'] = $client->institution_id;
+                $program_data['inspector_id'] = $client->inspector_id;
+                $program_data['inspector_staff_id'] = $client->inspector_staff_id;
+
+                $program_data['billing_street'] = $client->address;
+                $program_data['billing_city'] = $client->city;
+                $program_data['billing_zip'] = $client->zip;
+                $program_data['billing_state'] = $client->state;
+                
+                /*
+                echo '<pre>';
+                var_dump($program_data);
+                echo '<br >----------------<br />';
+                var_dump($client);
+                echo '</pre>';
+                die();
+                */
+
                 $id = $this->programs_model->add($program_data);
 
                 if ($id) {
@@ -193,6 +223,8 @@ class Programs extends AdminController
         $data['staff']             = $this->staff_model->get('', ['active' => 1, 'client_type'=>'inspector']);
         $data['program_states'] = $this->programs_model->get_states();
         $data['title']             = $title;
+        $data['client_type']       = $current_user->client_type;
+        $data['is_company']       = $client->is_company;
         $this->load->view('admin/programs/program', $data);
     }
     
@@ -293,7 +325,7 @@ class Programs extends AdminController
             die;
         }
 
-        if(strtolower($current_user->client_type) == 'company'
+        if($current_user->client_type == 'Company'
            && !is_staff_related_to_company($program->clientid) ){
             echo _l('access_denied');
             die;

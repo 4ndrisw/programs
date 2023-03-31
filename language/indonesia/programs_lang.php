@@ -181,6 +181,12 @@ $lang['inspection_item_processed'] = 'Inspection item processed';
 $lang['propose_this_item'] = 'Propose this item';
 $lang['related_to_program']         = '%s ini terkait dengan %s: %s';
 
+$lang['program_items_table_heading']         = 'Nama pesawat';
+$lang['serial_number'] = 'Nomor seri';
+$lang['unit_number'] = 'Nomor unit';
+$lang['view_programs_in_inpectors']         = 'Melihat semua program di UPT';
+$lang['view_programs_in_institutions']         = 'Melihat semua program di Kantor Dinas';
+
 /*
 
 

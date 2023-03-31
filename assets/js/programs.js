@@ -27,6 +27,7 @@ function validate_program_form(selector) {
         surveyor_id: 'required',
         inspector_id: 'required',
         inspector_staff_id: 'required',
+        reference_no: 'required',
         number: {
             required: true
         }

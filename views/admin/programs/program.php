@@ -21,12 +21,15 @@
 <script>
 	$(function(){
 		validate_program_form();
+		apps_ajax_search("company", "#clientid.ajax-search");
+		apps_ajax_search("inspector", "#inspectorid.ajax-search");
+		apps_ajax_search("surveyor", "#surveyorid.ajax-search");
 		// Init accountacy currency symbol
 		//init_currency();
 		// Project ajax search
 		//init_ajax_project_search_by_customer_id();
 		// Maybe items ajax search
-	    init_ajax_search('items','#item_select.ajax-search',undefined,admin_url+'items/search');
+	    //init_ajax_search('items','#item_select.ajax-search',undefined,admin_url+'items/search');
 	});
 </script>
 </body>

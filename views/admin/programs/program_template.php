@@ -11,39 +11,44 @@
           }
           ?>
          <div class="col-md-6 border-right">
-            <div class="f_client_id">
-             <div class="form-group select-placeholder">
-                <label for="clientid" class="control-label"><?php echo _l('program_select_customer'); ?></label>
-                <select id="clientid" name="clientid" data-live-search="true" data-width="100%" class="ajax-search<?php if(isset($program) && empty($program->clientid)){echo ' customer-removed';} ?>" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>">
-               <?php $selected = (isset($program) ? $program->clientid : '');
-                 if($selected == ''){
-                   $selected = (isset($customer_id) ? $customer_id: '');
-                 }
-                 if($selected != ''){
-                    $rel_data = get_relation_data('customer',$selected);
-                    $rel_val = get_relation_values($rel_data,'customer');
-                    echo '<option value="'.$rel_val['id'].'" selected>'.$rel_val['name'].'</option>';
-                 } ?>
-                </select>
+            <?php if(!$is_company){ ?>
+               <div class="f_client_id">
+                <div class="form-group select-placeholder">
+                   <label for="clientid" class="control-label"><?php echo _l('program_select_customer'); ?></label>
+                   <select id="clientid" name="clientid" data-live-search="true" data-width="100%" class="ajax-search<?php if(isset($program) && empty($program->clientid)){echo ' customer-removed';} ?>" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>">
+                  <?php $selected = (isset($program) ? $program->clientid : '');
+                    if($selected == ''){
+                      $selected = (isset($customer_id) ? $customer_id: '');
+                    }
+                    if($selected != ''){
+                       $rel_data = apps_get_relation_data('company',$selected);
+                       $rel_val = apps_get_relation_values($rel_data,'company');
+                       echo '<option value="'.$rel_val['id'].'" selected>'.$rel_val['name'].'</option>';
+                    } ?>
+                   </select>
+                 </div>
+               </div>
+               <div class="form-group select-placeholder projects-wrapper<?php if((!isset($program)) || (isset($program) && !customer_has_projects($program->clientid))){ echo ' hide';} ?>">
+                <label for="project_id"><?php echo _l('project'); ?></label>
+                <div id="project_ajax_search_wrapper">
+                  <select name="project_id" id="project_id" class="projects ajax-search" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>">
+                   <?php
+                     if(isset($program) && $program->project_id != 0){
+                       echo '<option value="'.$program->project_id.'" selected>'.get_project_name_by_id($program->project_id).'</option>';
+                     }
+                   ?>
+                 </select>
+               </div>
               </div>
-            </div>
-            <div class="form-group select-placeholder projects-wrapper<?php if((!isset($program)) || (isset($program) && !customer_has_projects($program->clientid))){ echo ' hide';} ?>">
-             <label for="project_id"><?php echo _l('project'); ?></label>
-             <div id="project_ajax_search_wrapper">
-               <select name="project_id" id="project_id" class="projects ajax-search" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>">
-                <?php
-                  if(isset($program) && $program->project_id != 0){
-                    echo '<option value="'.$program->project_id.'" selected>'.get_project_name_by_id($program->project_id).'</option>';
-                  }
-                ?>
-              </select>
-            </div>
-           </div>
+            <?php } ?>
+
             <div class="row">
+            <?php if(!$is_company){ ?>
                <div class="col-md-12">
                   <a href="#" class="edit_shipping_billing_info" data-toggle="modal" data-target="#billing_and_shipping_details"><i class="fa fa-pencil-square-o"></i></a>
                   <?php include_once(module_views_path('programs','admin/programs/billing_and_shipping_template.php')); ?>
                </div>
+
                <div class="col-md-6">
                   <p class="bold"><?php echo _l('invoice_bill_to'); ?></p>
                   <address>
@@ -96,6 +101,8 @@
                      <?php echo $shipping_zip; ?></span>
                   </address>
                </div>
+
+               <?php } ?>
             </div>
 
             <?php
@@ -199,24 +206,25 @@
                       $rel_id = $custom_fields_rel_transfer;
                   }
              ?>
-            <?php echo render_custom_fields('program',$rel_id); ?>
+            <?php //echo render_custom_fields('program',$rel_id); ?>
          </div>
          <div class="col-md-6">
             <div class="no-shadow">
+            <?php if(!$is_company){ ?>
 
                <div class="row">
                   <div class="col-md-12">
                      <div class="f_client_id">
                       <div class="form-group select-placeholder">
-                         <label for="clientid" class="control-label"><?php echo _l('inspector'); ?></label>
-                         <select id="clientid" name="inspector_id" data-live-search="true" data-width="100%" class="ajax-search<?php if(isset($program) && empty($program->clientid)){echo ' customer-removed';} ?>" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>">
+                         <label for="inspectorid" class="control-label"><?php echo _l('inspector'); ?></label>
+                         <select id="inspectorid" name="inspector_id" data-live-search="true" data-width="100%" class="ajax-search<?php if(isset($program) && empty($program->clientid)){echo ' customer-removed';} ?>" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>">
                         <?php $selected = (isset($program) ? $program->inspector_id : '');
                           if($selected == ''){
                             $selected = (isset($customer_id) ? $customer_id: '');
                           }
                           if($selected != ''){
-                             $rel_data = get_relation_data('customer',$selected);
-                             $rel_val = get_relation_values($rel_data,'customer');
+                             $rel_data = apps_get_relation_data('inspector',$selected);
+                             $rel_val = get_relation_values($rel_data,'inspector');
                              echo '<option value="'.$rel_val['id'].'" selected>'.$rel_val['name'].'</option>';
                           } ?>
                          </select>
@@ -224,19 +232,20 @@
                      </div>
                   </div>
                </div>
+                  <?php } ?>
                <div class="row">
                   <div class="col-md-12">
                      <div class="f_client_id">
                       <div class="form-group select-placeholder">
-                         <label for="clientid" class="control-label"><?php echo _l('surveyor'); ?></label>
-                         <select id="clientid" name="surveyor_id" data-live-search="true" data-width="100%" class="ajax-search<?php if(isset($program) && empty($program->clientid)){echo ' customer-removed';} ?>" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>">
+                         <label for="surveyorid" class="control-label"><?php echo _l('surveyor'); ?></label>
+                         <select id="surveyorid" name="surveyor_id" data-live-search="true" data-width="100%" class="ajax-search<?php if(isset($program) && empty($program->clientid)){echo ' customer-removed';} ?>" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>">
                         <?php $selected = (isset($program) ? $program->surveyor_id : '');
                           if($selected == ''){
                             $selected = (isset($customer_id) ? $customer_id: '');
                           }
                           if($selected != ''){
-                             $rel_data = get_relation_data('customer',$selected);
-                             $rel_val = get_relation_values($rel_data,'customer');
+                             $rel_data = apps_get_relation_data('surveyor',$selected);
+                             $rel_val = get_relation_values($rel_data,'surveyor');
                              echo '<option value="'.$rel_val['id'].'" selected>'.$rel_val['name'].'</option>';
                           } ?>
                          </select>
@@ -246,6 +255,7 @@
                </div>
 
                <div class="row">
+                  <?php if(!$is_company){ ?>
                   <div class="col-md-6">
                          <?php
                         $selected = '';
@@ -259,6 +269,8 @@
                         echo render_select('inspector_staff_id',$staff,array('staffid',array('firstname','lastname')),'inspector_staff_id_string',$selected);
                         ?>
                   </div>
+
+                  <?php } ?>
                    <div class="col-md-6">
                      <div class="form-group select-placeholder">
                         <label class="control-label"><?php echo _l('program_state'); ?></label>
@@ -269,14 +281,14 @@
                         </select>
                      </div>
                   </div>
-                  <div class="col-md-12">
+                  <div class="col-md-6">
                     <?php $value = (isset($program) ? $program->reference_no : ''); ?>
                     <?php echo render_input('reference_no','reference_no',$value); ?>
                   </div>
 
                </div>
-               <?php $value = (isset($program) ? $program->adminnote : ''); ?>
-               <?php echo render_textarea('adminnote','program_add_edit_admin_note',$value); ?>
+               <?php //$value = (isset($program) ? $program->adminnote : ''); ?>
+               <?php //echo render_textarea('adminnote','program_add_edit_admin_note',$value); ?>
 
             </div>
          </div>

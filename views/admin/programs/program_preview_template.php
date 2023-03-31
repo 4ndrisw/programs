@@ -364,6 +364,11 @@
                   </div>
                   <div class="row">
                      <div class="col-md-12">
+                        <?php 
+                           echo get_company_name($program->surveyor_id);
+
+
+                        ?>
                         <div class="table-responsive">
                               <?php
                                  //$items = get_preview_table_data($program, 'program', 'html', true);
@@ -416,7 +421,7 @@
                
                <span class="label label-success mbot5 mtop5"><?php echo _l('program_item_proposed'); ?> </span>
                <hr />
-               <?php render_datatable(array( _l( 'program_items_table'), _l( 'serial_number'), _l( 'unit_number'), _l( 'process')), 'program_items'); ?>
+               <?php render_datatable(array( _l( 'program_items_table_heading'), _l( 'serial_number'), _l( 'unit_number'), _l( 'process')), 'program_items'); ?>
             </div>
             <div role="tabpanel" class="tab-pane" id="tab_peralatan">
                <a href="#" class="btn btn-info btn-disable" data-target=".reminder-modal-program-<?php echo $program->id; ?>"><i class="fa fa-bell-o"></i> <?php echo _l('equipments_available'); ?></a>

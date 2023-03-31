@@ -266,8 +266,8 @@ class Programs_model extends App_Model
                     '<a href="' . admin_url('inspections/list_inspections/' . $id) . '">' . format_invoice_number($id) . '</a>',
                 ]));
             }
-
-            hooks()->do_action('program_converted_to_invoice', ['invoice_id' => $id, 'program_id' => $_program->id]);
+            
+            hooks()->do_action('program_converted_to_inspections', ['inspection_id' => $id, 'program_id' => $_program->id]);
         }
 
         return $id;

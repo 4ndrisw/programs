@@ -192,8 +192,15 @@ $lang['propose_this_item'] = 'Propose this item';
 $lang['program_items_table'] = 'Program';
 $lang['program_items_tab'] = 'Program item';
 $lang['program_item_proposed'] = 'Program item processed';
+$lang['view_programs_in_inpectors']         = 'View all programs in inpectors';
+$lang['view_programs_in_institutions']         = 'View all programs in institution';
 
 
+$lang['program_state_1'] = 'Program status 1';
+$lang['program_state_2'] = 'Program status 2';
+$lang['program_state_3'] = 'Program status 3';
+$lang['program_state_4'] = 'Program status 4';
+$lang['program_state_5'] = 'Program status 5';
 
 
 /*
